@@ -16,9 +16,7 @@ public class CustomerService {
     CustomerRepository customerRepository;
 
     public Response getAllRestaurants() {
-        List<Restaurant> allRestaurants = new ArrayList<>();
-
-
+        List<Restaurant> allRestaurants = customerRepository.getAllRestaurants();
 
         return new Response(true, "Success", allRestaurants);
     }
