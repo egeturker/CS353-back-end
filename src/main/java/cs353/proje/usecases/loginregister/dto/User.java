@@ -15,8 +15,6 @@ import java.sql.Date;
 public class User {
     private int userId;
     private String email;
-
-    @NotBlank(message="Username cannot be empty.")
     private String username;
     private String password;
     private String telephone;
