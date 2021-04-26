@@ -4,10 +4,9 @@ import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.loginregister.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController("LoginController")
 @CrossOrigin
@@ -17,7 +16,7 @@ public class LoginController {
     LoginService loginService;
 
     @PostMapping("/login")
-    public Response login(@RequestBody User loginInfo)
+    public Response login(@Valid @RequestBody User loginInfo)
     {
         return loginService.login(loginInfo);
     }
