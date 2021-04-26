@@ -2,6 +2,8 @@ package cs353.proje.usecases.loginregister.service;
 
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.loginregister.dto.Courier;
+import cs353.proje.usecases.loginregister.dto.RestaurantOwner;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.loginregister.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,62 @@ public class LoginService {
             return new Response(false, "Login is unsuccessful", null);
     }
 
-    //Kaan
     public Response registerCustomer(Customer customerRegisterInfo) {
-        int result1 = loginRepository.addUser(customerRegisterInfo);
-        int result2 = loginRepository.addCustomer(customerRegisterInfo);
-
-        //If email already exists in database, reject
-
-        if (result1 > 0)
-            return new Response(true, "Registration is successful", null);
-        else
+        int user_id = loginRepository.addUser(customerRegisterInfo);
+        if (user_id < 0)
+        {
             return new Response(false, "Registration is unsuccessful", null);
+        }
+        else
+        {
+            customerRegisterInfo.setUserId(user_id);
+            int result = loginRepository.addCustomer(customerRegisterInfo);
+            if (result > 0)
+                return new Response(true, "Registration is successful", null);
+            else
+            {
+                return new Response(false, "Registration is unsuccessful", null);
+                //Might need to delete the inserted user tuple here.
+            }
+        }
+    }
+
+    public Response registerCourier(Courier courierRegisterInfo) {
+        int user_id = loginRepository.addUser(courierRegisterInfo);
+        if (user_id < 0)
+        {
+            return new Response(false, "Registration is unsuccessful", null);
+        }
+        else
+        {
+            courierRegisterInfo.setUserId(user_id);
+            int result = loginRepository.addCourier(courierRegisterInfo);
+            if (result > 0)
+                return new Response(true, "Registration is successful", null);
+            else
+            {
+                return new Response(false, "Registration is unsuccessful", null);
+                //Might need to delete the inserted user tuple here.
+            }
+        }
+    }
+
+    public Response registerRestaurantOwner(RestaurantOwner restaurantOwnerRegisterInfo) {
+        int user_id = loginRepository.addUser(restaurantOwnerRegisterInfo);
+        if (user_id < 0)
+        {
+            return new Response(false, "Registration is unsuccessful", null);
+        }
+        else
+        {
+            int result = loginRepository.addEmptyRestaurant(user_id);
+            if (result > 0)
+                return new Response(true, "Registration is successful", null);
+            else
+            {
+                return new Response(false, "Registration is unsuccessful", null);
+                //Might need to delete the inserted user tuple here.
+            }
+        }
     }
 }

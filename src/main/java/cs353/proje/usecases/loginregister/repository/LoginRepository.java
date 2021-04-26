@@ -1,6 +1,7 @@
 package cs353.proje.usecases.loginregister.repository;
 
 import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,6 +34,8 @@ public class LoginRepository {
         return user;
     };
 
+    RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
+
     public User login(User loginInfo)
     {
         String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
@@ -55,18 +58,43 @@ public class LoginRepository {
                 registerInfo.getTelephone(), LocalDate.now(),
                 registerInfo.getImage(), registerInfo.getUserType()};
 
-        return jdbcTemplate.update(sql, params);
+        if (jdbcTemplate.update(sql, params) < 0)
+            return -1;
+        else {
+            String sqlGetId = "SELECT LAST_INSERT_ID()";
+            Object [] params2 = {};
+            int id = jdbcTemplate.queryForObject(sqlGetId, integerRowMapper);
+
+            return id;
+        }
     }
 
     public int addCustomer(Customer registerInfo)
     {
-        String sql = "INSERT INTO customer(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO customer(customer_id, address, region_id) " +
+                "VALUES(?, ?, ?)";
 
-        Object [] params = {registerInfo.getName(), registerInfo.getSurname(), registerInfo.getEmail(),
-                registerInfo.getUsername(), registerInfo.getPassword(),
-                registerInfo.getTelephone(), LocalDate.now(),
-                registerInfo.getImage(), registerInfo.getUserType()};
+        Object [] params = {registerInfo.getUserId(), registerInfo.getAddress(), registerInfo.getRegion_id()};
+
+        return jdbcTemplate.update(sql, params);
+    }
+
+    public int addCourier(Courier registerInfo)
+    {
+        String sql = "INSERT INTO courier(courier_id, status, rating) " +
+                "VALUES(?, ?, ?)";
+
+        Object [] params = {registerInfo.getUserId(), "Not Available", 0.00};
+
+        return jdbcTemplate.update(sql, params);
+    }
+
+    public int addEmptyRestaurant(int owner_id)
+    {
+        String sql = "INSERT INTO restaurant(owner_id, restaurant_name, rating, address, description, restaurant_category, status) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+        Object [] params = {owner_id, "RESTAURANT NAME NOT SET", 0.00, "ADRESS NOT SET", "", "CATEGORY NOT SET", "Closed"};
 
         return jdbcTemplate.update(sql, params);
     }
