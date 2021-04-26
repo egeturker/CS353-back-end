@@ -21,8 +21,14 @@ public class LoginService {
             return new Response(false, "Login is unsuccessful", null);
     }
 
+    //Kaan
     public Response register(User registerInfo) {
         int result = loginRepository.register(registerInfo);
+
+        //If usertype is restaurant owner, create his/her restaurant.
+
+        //If email already exists in database, reject
+
         if (result > 0)
             return new Response(true, "Registration is successful", null);
         else
