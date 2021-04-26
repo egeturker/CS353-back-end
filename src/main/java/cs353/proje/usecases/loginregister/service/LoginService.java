@@ -1,6 +1,7 @@
 package cs353.proje.usecases.loginregister.service;
 
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.loginregister.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,13 @@ public class LoginService {
     }
 
     //Kaan
-    public Response register(User registerInfo) {
-        int result = loginRepository.register(registerInfo);
-
-        //If usertype is restaurant owner, create his/her restaurant.
+    public Response registerCustomer(Customer customerRegisterInfo) {
+        int result1 = loginRepository.addUser(customerRegisterInfo);
+        int result2 = loginRepository.addCustomer(customerRegisterInfo);
 
         //If email already exists in database, reject
 
-        if (result > 0)
+        if (result1 > 0)
             return new Response(true, "Registration is successful", null);
         else
             return new Response(false, "Registration is unsuccessful", null);

@@ -1,6 +1,7 @@
 package cs353.proje.usecases.loginregister.controller;
 
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.loginregister.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ public class LoginController {
         return loginService.login(loginInfo);
     }
 
-    @PostMapping("/register")
-    public Response register(@RequestBody User registerInfo)
+    @PostMapping("/registerCustomer")
+    public Response registerCustomer(@RequestBody Customer customerRegisterInfo)
     {
-        return loginService.register(registerInfo);
+        return loginService.registerCustomer(customerRegisterInfo);
     }
 }

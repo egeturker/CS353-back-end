@@ -1,5 +1,6 @@
 package cs353.proje.usecases.loginregister.repository;
 
+import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,9 +45,22 @@ public class LoginRepository {
             return null;
     }
 
-    public int register(User registerInfo)
+    public int addUser(User registerInfo)
     {
         String sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Object [] params = {registerInfo.getName(), registerInfo.getSurname(), registerInfo.getEmail(),
+                registerInfo.getUsername(), registerInfo.getPassword(),
+                registerInfo.getTelephone(), LocalDate.now(),
+                registerInfo.getImage(), registerInfo.getUserType()};
+
+        return jdbcTemplate.update(sql, params);
+    }
+
+    public int addCustomer(Customer registerInfo)
+    {
+        String sql = "INSERT INTO customer(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Object [] params = {registerInfo.getName(), registerInfo.getSurname(), registerInfo.getEmail(),
