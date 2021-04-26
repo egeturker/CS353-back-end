@@ -34,6 +34,11 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql,restaurantRowMapper);
     }
 
+    public List<Restaurant> getRestaurantsWithFilter(String open, double minRating, double maxRating) {
+        String sql = "SELECT * FROM restaurant WHERE status = ? AND rating BETWEEN ? AND ?";
+        Object[] params = {open, minRating, maxRating};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
 
 
 }
