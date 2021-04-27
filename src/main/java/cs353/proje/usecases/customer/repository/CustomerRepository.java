@@ -206,7 +206,6 @@ public class CustomerRepository {
             category_item.setCategoryMenuItems(getRestaurantMenu(restaurant_id, food_category));
             category_item.setCategory(food_category);
             category_menu.add(category_item);
-            food_category = menuItem.getFoodCategory();
         }
 
         return category_menu;
