@@ -19,8 +19,7 @@ public class CustomerController {
     @GetMapping("/allRestaurants")
     public Response getAllRestaurants()
     {
-        Response response = customerService.getAllRestaurants();
-        return response;
+        return customerService.getAllRestaurants();
     }
 
     //Ege
