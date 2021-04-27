@@ -1,5 +1,6 @@
 package cs353.proje.usecases.customer.repository;
 
+import cs353.proje.usecases.common.dto.CategoryMenu;
 import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -180,5 +182,33 @@ public class CustomerRepository {
                      "ORDER BY food_category";
         Object[] params = {restaurant_id};
         return jdbcTemplate.query(sql, params, menuRowMapper);
+    }
+
+    public List<MenuItem> getRestaurantMenu(int restaurant_id, String food_category) {
+        String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
+                     "WHERE menu_item.restaurant_id = ? AND menu_item.food_category = ? ";
+        Object[] params = {restaurant_id, food_category};
+        return jdbcTemplate.query(sql, params, menuRowMapper);
+    }
+
+    public List<CategoryMenu> getRestaurantMenuByCategory(int restaurant_id){
+        String sql_category = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
+                              "WHERE menu_item.restaurant_id = ? " +
+                              "GROUP BY food_category";
+        Object[] params = {restaurant_id};
+        List<MenuItem> menu = jdbcTemplate.query(sql_category, params, menuRowMapper);
+
+        List<CategoryMenu> category_menu = new ArrayList<>();
+        CategoryMenu category_item = new CategoryMenu();
+
+        String food_category = menu.get(0).getFoodCategory();
+        for (MenuItem menuItem : menu) {
+            category_item.setCategoryMenuItems(getRestaurantMenu(restaurant_id, food_category));
+            category_item.setCategory(food_category);
+            category_menu.add(category_item);
+            food_category = menuItem.getFoodCategory();
+        }
+
+        return category_menu;
     }
 }

@@ -1,9 +1,6 @@
 package cs353.proje.usecases.customer.service;
 
-import cs353.proje.usecases.common.dto.Coupon;
-import cs353.proje.usecases.common.dto.MenuItem;
-import cs353.proje.usecases.common.dto.Order;
-import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.Restaurant;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
@@ -79,4 +76,14 @@ public class CustomerService {
         else
             return new Response(false, "No menu found", null);
     }
+
+    public Response getRestaurantMenuByCategory(int restaurant_id) {
+        List<CategoryMenu> menu = customerRepository.getRestaurantMenuByCategory(restaurant_id);
+        if(menu.size() >= 1)
+            return new Response(true, "Success", menu);
+        else
+            return new Response(false, "No menu found", null);
+    }
+
+
 }

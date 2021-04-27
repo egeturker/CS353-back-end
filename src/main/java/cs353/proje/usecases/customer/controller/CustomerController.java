@@ -82,6 +82,12 @@ public class CustomerController {
         return customerService.getRestaurantMenu(restaurant_id);
     }
 
+    @GetMapping("/restaurantMenuByCategory/id={id}")
+    public Response getRestaurantMenuByCategory(@PathVariable(value="id") int restaurant_id)
+    {
+        return customerService.getRestaurantMenuByCategory(restaurant_id);
+    }
+
     //Kaan
     @PostMapping("/addFavorite/customer_id={customer_id}")
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
