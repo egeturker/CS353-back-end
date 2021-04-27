@@ -1,5 +1,6 @@
 package cs353.proje.usecases.customer.service;
 
+import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
@@ -47,10 +48,18 @@ public class CustomerService {
     }
 
     public Response getOldOrders(int customerId){
-        List<Order> oldOrders = customerRepository.getOldOrders( customerId);
+        List<Order> oldOrders = customerRepository.getOldOrders(customerId);
         if(oldOrders.size() >= 1)
             return new Response(true, "Success", oldOrders);
         else
             return new Response(false, "No orders found", null);
+    }
+
+    public Response getCoupons(int customer_id) {
+        List<Coupon> coupons = customerRepository.getCoupons(customer_id);
+        if(coupons.size() >= 1)
+            return new Response(true, "Success", coupons);
+        else
+            return new Response(false, "No coupons found", null);
     }
 }

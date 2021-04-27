@@ -1,5 +1,6 @@
 package cs353.proje.usecases.customer.repository;
 
+import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.Restaurant;
@@ -66,6 +67,15 @@ public class CustomerRepository {
         return order;
     };
 
+    RowMapper<Coupon> couponRowMapper = (rs, rowNum) ->{
+        Coupon coupon = new Coupon();
+        coupon.setCouponId(rs.getInt("coupon_id"));
+        coupon.setDiscountAmount(rs.getInt("discount_amount"));
+        coupon.setCustomerId(rs.getInt("customer_id"));
+        coupon.setRestaurantId(rs.getInt("restaurant_id"));
+
+        return coupon;
+    };
     public List<Restaurant> getAllRestaurants(){
         String sql = "SELECT * FROM restaurant";
         return jdbcTemplate.query(sql, restaurantRowMapper);
@@ -129,5 +139,11 @@ public class CustomerRepository {
     }
 
 
-
+    public List<Coupon> getCoupons(int customer_id) {
+        String sql = "SELECT coupon_id, discount_amount, restaurant_name " +
+                     "FROM coupon INNER JOIN restaurant ON coupon.restaurant_id = restaurant.restaurant_id " +
+                     "WHERE customer_id = ? AND used <> 1";
+        Object[] params = {customer_id};
+        return jdbcTemplate.query(sql, params, couponRowMapper);
+    }
 }

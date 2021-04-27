@@ -64,7 +64,8 @@ public class CustomerController {
     @GetMapping("/coupons/id={id}")
     public Response getCoupons(@PathVariable(value="id") int customer_id)
     {
-        return null;
+
+        return customerService.getCoupons(customer_id);
     }
 
     //Kaan
