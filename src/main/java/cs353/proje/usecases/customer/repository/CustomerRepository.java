@@ -71,9 +71,12 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, restaurantRowMapper);
     }
 
-    public List<Restaurant> getRestaurantsWithFilter(String open, double minRating, double maxRating) {
-        String sql = "SELECT * FROM restaurant WHERE status = ? AND rating BETWEEN ? AND ?";
-        Object[] params = {open, minRating, maxRating};
+    public List<Restaurant> getRestaurantsWithFilter(int customer_id, String open, double minRating, double maxRating) {
+        String sql = "SELECT * FROM restaurant INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                     "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                     "INNER JOIN customer ON region.region_id = ? " +
+                     "WHERE status = ? AND rating BETWEEN ? AND ?";
+        Object[] params = {customer_id,open, minRating, maxRating};
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 

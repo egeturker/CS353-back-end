@@ -23,8 +23,8 @@ public class CustomerService {
         return new Response(true, "No restaurants found to be listed", allRestaurants);
     }
     
-    public Response getRestaurantsWithFilter(String open, double minRating, double maxRating) {
-        List<Restaurant> selectedRestaurants = customerRepository.getRestaurantsWithFilter(open, minRating, maxRating);
+    public Response getRestaurantsWithFilter(int customer_id, String open, double minRating, double maxRating) {
+        List<Restaurant> selectedRestaurants = customerRepository.getRestaurantsWithFilter(customer_id, open, minRating, maxRating);
         if(selectedRestaurants.size()>=1)
             return new Response(true, "Success", selectedRestaurants);
         else

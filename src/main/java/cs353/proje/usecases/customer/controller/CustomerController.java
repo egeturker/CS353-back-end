@@ -51,12 +51,13 @@ public class CustomerController {
     }
 
     //Kaan
-    @GetMapping("/restaurants/open={open}/rating={min}to{max}")
-    public Response getRestaurantsWithFilter(@PathVariable(value="open") String open,
+    @GetMapping("/restaurants/id={id}/open={open}/rating={min}to{max}")
+    public Response getRestaurantsWithFilter(@PathVariable(value="id") int customer_id,
+                                             @PathVariable(value="open") String open,
                                              @PathVariable(value="min") double minRating,
                                              @PathVariable(value="max") double maxRating)
     {
-        return customerService.getRestaurantsWithFilter(open, minRating, maxRating);
+        return customerService.getRestaurantsWithFilter(customer_id, open, minRating, maxRating);
     }
 
     //Kaan
