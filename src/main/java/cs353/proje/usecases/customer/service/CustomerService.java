@@ -25,9 +25,9 @@ public class CustomerService {
     }
     
     public Response getRestaurantsWithFilter(int customer_id, String open, double minRating, double maxRating) {
-        List<Restaurant> selectedRestaurants = customerRepository.getRestaurantsWithFilter(customer_id, open, minRating, maxRating);
-        if(selectedRestaurants.size()>=1)
-            return new Response(true, "Success", selectedRestaurants);
+        List<Restaurant> selected_restaurants = customerRepository.getRestaurantsWithFilter(customer_id, open, minRating, maxRating);
+        if(selected_restaurants.size()>=1)
+            return new Response(true, "Success", selected_restaurants);
         else
             return new Response(false, "No restaurants found matching the filters", null);
     }
@@ -61,5 +61,13 @@ public class CustomerService {
             return new Response(true, "Success", coupons);
         else
             return new Response(false, "No coupons found", null);
+    }
+
+    public Response getRestaurantInfo(int restaurant_id) {
+        Restaurant restaurant_info = customerRepository.getRestaurantInfo(restaurant_id);
+        if(restaurant_info != null)
+            return new Response(true, "Success", restaurant_info);
+        else
+            return new Response(false, "Restaurant not found", null);
     }
 }

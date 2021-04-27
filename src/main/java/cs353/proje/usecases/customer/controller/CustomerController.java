@@ -72,7 +72,8 @@ public class CustomerController {
     @GetMapping("/restaurantInfo/id={id}")
     public Response getRestaurantInfo(@PathVariable(value="id") int restaurant_id)
     {
-        return null;
+
+        return customerService.getRestaurantInfo(restaurant_id);
     }
 
     //Kaan

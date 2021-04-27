@@ -142,8 +142,21 @@ public class CustomerRepository {
     public List<Coupon> getCoupons(int customer_id) {
         String sql = "SELECT coupon_id, discount_amount, restaurant_name " +
                      "FROM coupon INNER JOIN restaurant ON coupon.restaurant_id = restaurant.restaurant_id " +
-                     "WHERE customer_id = ? AND used <> 1";
+                     "WHERE customer_id = ? AND used <> true";
         Object[] params = {customer_id};
         return jdbcTemplate.query(sql, params, couponRowMapper);
+    }
+
+    public Restaurant getRestaurantInfo(int restaurant_id) {
+        String sql = "SELECT * " +
+                     "FROM restaurant " +
+                     "WHERE restaurant_id = ? ";
+        Object[] params = {restaurant_id};
+        List<Restaurant> restaurant = jdbcTemplate.query(sql, params, restaurantRowMapper);
+
+        if(restaurant.size() == 1)
+            return restaurant.get(0);
+        else
+            return null;
     }
 }
