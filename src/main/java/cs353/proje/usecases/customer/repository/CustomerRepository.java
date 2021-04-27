@@ -200,12 +200,15 @@ public class CustomerRepository {
 
         List<CategoryMenu> category_menu = new ArrayList<>();
         CategoryMenu category_item = new CategoryMenu();
+        String food_category;
 
-        String food_category = menu.get(0).getFoodCategory();
-        for (MenuItem menuItem : menu) {
+       for(int i = 0; i < menu.size(); i++) {
+            food_category = menu.get(i).getFoodCategory();
             category_item.setCategoryMenuItems(getRestaurantMenu(restaurant_id, food_category));
             category_item.setCategory(food_category);
-            category_menu.add(category_item);
+            category_menu.add(i,category_item);
+
+            category_item = new CategoryMenu();
         }
 
         return category_menu;
