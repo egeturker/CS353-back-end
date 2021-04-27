@@ -76,6 +76,12 @@ public class CustomerController {
         return customerService.getRestaurantInfo(restaurant_id);
     }
 
+    @GetMapping("/restaurantMenu/id={id}")
+    public Response getRestaurantMenu(@PathVariable(value="id") int restaurant_id)
+    {
+        return customerService.getRestaurantMenu(restaurant_id);
+    }
+
     //Kaan
     @PostMapping("/addFavorite/customer_id={customer_id}")
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
@@ -90,5 +96,6 @@ public class CustomerController {
     {
         return null;
     }
+
 
 }

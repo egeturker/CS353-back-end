@@ -1,6 +1,7 @@
 package cs353.proje.usecases.customer.repository;
 
 import cs353.proje.usecases.common.dto.Coupon;
+import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.Restaurant;
@@ -32,6 +33,19 @@ public class CustomerRepository {
         restaurant.setStatus(rs.getString("status"));
 
         return restaurant;
+    };
+
+    RowMapper<MenuItem> menuRowMapper = (rs, rowNum) ->{
+        MenuItem menu = new MenuItem();
+        menu.setRestaurantId(rs.getInt("restaurant_id"));
+        menu.setMenuItemId(rs.getInt("menu_item_id"));
+        menu.setName(rs.getString("name"));
+        menu.setImageLink(rs.getString("image"));
+        menu.setDescription(rs.getString("description"));
+        menu.setBasePrice(rs.getDouble("base_price"));
+        menu.setFoodCategory(rs.getString("food_category"));
+
+        return menu;
     };
 
     RowMapper<Customer> customerRowMapper = (rs, rowNum) ->{
@@ -140,7 +154,7 @@ public class CustomerRepository {
 
 
     public List<Coupon> getCoupons(int customer_id) {
-        String sql = "SELECT coupon_id, discount_amount, restaurant_name " +
+        String sql = "SELECT * " +
                      "FROM coupon INNER JOIN restaurant ON coupon.restaurant_id = restaurant.restaurant_id " +
                      "WHERE customer_id = ? AND used <> true";
         Object[] params = {customer_id};
@@ -158,5 +172,13 @@ public class CustomerRepository {
             return restaurant.get(0);
         else
             return null;
+    }
+
+    public List<MenuItem> getRestaurantMenu(int restaurant_id) {
+        String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
+                     "WHERE menu_item.restaurant_id = ? " +
+                     "ORDER BY food_category";
+        Object[] params = {restaurant_id};
+        return jdbcTemplate.query(sql, params, menuRowMapper);
     }
 }
