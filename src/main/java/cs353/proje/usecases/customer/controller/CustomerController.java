@@ -26,21 +26,21 @@ public class CustomerController {
     @GetMapping("/customerData/id={id}")
     public Response getCustomerData(@PathVariable(value="id") int customer_id)
     {
-        return null;
+        return customerService.getCustomerData(customer_id);
     }
 
     //Ege
     @PostMapping("/customerData/id={id}")
     public Response updateCustomerData(@PathVariable(value="id") int customer_id, @RequestBody Customer newCustomerData)
     {
-        return null;
+        return customerService.updateCustomerData(customer_id, newCustomerData);
     }
 
     //Ege
     @GetMapping("/orders/id={id}")
     public Response getOldOrders(@PathVariable(value="id") int customer_id)
     {
-        return null;
+        return customerService.getOldOrders(customer_id);
     }
 
     //Ege

@@ -24,7 +24,7 @@ public class RegionService {
         if(regionName != null)
             return new Response(true, "Success", regionName);
         else
-            return new Response(false,"Failure", regionName);
+            return new Response(false,"Region not found", regionName);
     }
 
     public Response addRegion(String regionName){

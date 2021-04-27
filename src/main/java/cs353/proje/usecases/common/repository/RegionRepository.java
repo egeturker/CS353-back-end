@@ -39,7 +39,6 @@ public class RegionRepository {
     public int addRegion(String regionName){
         String sql = "INSERT INTO region(region_name) VALUES(?)";
         Object[] params = {regionName};
-        System.out.println(params[0]);
 
         if(jdbcTemplate.update(sql, params) < 0)
             return -1;

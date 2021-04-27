@@ -1,14 +1,25 @@
 package cs353.proje.usecases.common.dto;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Order {
 
-    private int order_id;
-    private int restaurant_id;
-    private int customer_id;
-
-    private List<QuantityMenuItem> quantityMenuItems;
-
+    private int orderId;
+    private int restaurantId;
+    private int customerId;
+    private double price;
+    private Timestamp orderTime;
+    private Timestamp deliveryTime;
+    private String status;
+    private Timestamp optionalDeliveryTime;
+    private String restaurantName;
 
 }
