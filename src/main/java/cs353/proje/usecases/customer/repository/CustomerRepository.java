@@ -85,10 +85,12 @@ public class CustomerRepository {
 
     RowMapper<Coupon> couponRowMapper = (rs, rowNum) ->{
         Coupon coupon = new Coupon();
-        coupon.setCouponId(rs.getInt("coupon_id"));
+        coupon.setCouponId(rs.getString("coupon_id"));
         coupon.setDiscountAmount(rs.getInt("discount_amount"));
         coupon.setCustomerId(rs.getInt("customer_id"));
         coupon.setRestaurantId(rs.getInt("restaurant_id"));
+        coupon.setUsed(false);
+        coupon.setRestaurantName(getRestaurantInfo(coupon.getRestaurantId()).getRestaurant_name());
 
         return coupon;
     };

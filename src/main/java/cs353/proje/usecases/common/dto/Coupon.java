@@ -8,9 +8,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Coupon {
-    private int couponId;
+    private String couponId;
     private double discountAmount;
     private int customerId;
-    private String used;
+    private boolean used;
     private int restaurantId;
+    private String restaurantName;
 }
