@@ -3,6 +3,7 @@ package cs353.proje.usecases.customer.controller;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.customer.dto.OrderFromCustomer;
 import cs353.proje.usecases.customer.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -96,12 +97,18 @@ public class CustomerController {
         return null;
     }
 
-    //Kaan
-    @PostMapping("/order")
-    public Response createNewOrder(@RequestBody Order order)
+    //Returns List<Ingredient> in the Response
+    @GetMapping("/ingredients/id={menu_item_id}")
+    public Response ingredients(@PathVariable(value="menu_item_id") int menu_item_id)
     {
         return null;
     }
 
+    //Kaan
+    @PostMapping("/order")
+    public Response createNewOrder(@RequestBody OrderFromCustomer order)
+    {
+        return null;
+    }
 
 }
