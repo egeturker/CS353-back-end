@@ -52,17 +52,17 @@ public class LoginRepository {
     {
         String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
         Object[] paramEmail = {registerInfo.getEmail()};
-        if(jdbcTemplate.update(sql,paramEmail) > 0)
+        if(jdbcTemplate.queryForObject(sql,paramEmail,Integer.class) > 0)
             return -2;
 
         sql = "SELECT COUNT(*) FROM user WHERE username = ?";
         Object[] paramUsername = {registerInfo.getUsername()};
-        if(jdbcTemplate.update(sql,paramUsername) > 0)
+        if(jdbcTemplate.queryForObject(sql,paramUsername, Integer.class) > 0)
             return -3;
 
         sql = "SELECT COUNT(*) FROM user WHERE telephone = ?";
         Object[] paramTelephone = {registerInfo.getTelephone()};
-        if(jdbcTemplate.update(sql,paramTelephone) > 0)
+        if(jdbcTemplate.queryForObject(sql,paramTelephone, Integer.class) > 0)
             return -4;
 
         sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
