@@ -50,7 +50,22 @@ public class LoginRepository {
 
     public int addUser(User registerInfo)
     {
-        String sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
+        String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
+        Object[] paramEmail = {registerInfo.getEmail()};
+        if(jdbcTemplate.update(sql,paramEmail) > 0)
+            return -2;
+
+        sql = "SELECT COUNT(*) FROM user WHERE username = ?";
+        Object[] paramUsername = {registerInfo.getUsername()};
+        if(jdbcTemplate.update(sql,paramUsername) > 0)
+            return -3;
+
+        sql = "SELECT COUNT(*) FROM user WHERE telephone = ?";
+        Object[] paramTelephone = {registerInfo.getTelephone()};
+        if(jdbcTemplate.update(sql,paramTelephone) > 0)
+            return -4;
+
+        sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Object [] params = {registerInfo.getName(), registerInfo.getSurname(), registerInfo.getEmail(),
@@ -94,7 +109,7 @@ public class LoginRepository {
         String sql = "INSERT INTO restaurant(owner_id, restaurant_name, rating, address, description, restaurant_category, status) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
-        Object [] params = {owner_id, "RESTAURANT NAME NOT SET", 0.00, "ADRESS NOT SET", "", "CATEGORY NOT SET", "Closed"};
+        Object [] params = {owner_id, "RESTAURANT NAME NOT SET", 0.00, "ADDRESS NOT SET", "", "CATEGORY NOT SET", "Closed"};
 
         return jdbcTemplate.update(sql, params);
     }
