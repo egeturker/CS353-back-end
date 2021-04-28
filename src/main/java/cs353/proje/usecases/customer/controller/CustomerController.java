@@ -51,6 +51,13 @@ public class CustomerController {
         return null;
     }
 
+    @GetMapping("/restaurants/id={id}/search={searchkey}")
+    public Response getRestaurantsWithSearch(@PathVariable(value="id") int customer_id,
+                                             @PathVariable(value="searchkey") String searchkey)
+    {
+        return null;
+    }
+
     //Kaan
     @GetMapping("/restaurants/id={id}/open={open}/rating={min}to{max}")
     public Response getRestaurantsWithFilter(@PathVariable(value="id") int customer_id,
@@ -99,7 +106,7 @@ public class CustomerController {
 
     //Returns List<Ingredient> in the Response
     @GetMapping("/ingredients/id={menu_item_id}")
-    public Response ingredients(@PathVariable(value="menu_item_id") int menu_item_id)
+    public Response getIngredients(@PathVariable(value="menu_item_id") int menu_item_id)
     {
         return null;
     }
