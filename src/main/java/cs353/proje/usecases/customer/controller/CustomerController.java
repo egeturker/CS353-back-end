@@ -96,17 +96,18 @@ public class CustomerController {
         return customerService.getRestaurantMenuByCategory(restaurant_id);
     }
 
+    //Returns List<Ingredient> in the Response
+    @GetMapping("/ingredients/id={menu_item_id}")
+    public Response getIngredients(@PathVariable(value="menu_item_id") int menu_item_id)
+    {
+
+        return customerService.getIngredients(menu_item_id);
+    }
+
     //Kaan
     @PostMapping("/addFavorite/customer_id={customer_id}")
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
                                 @RequestBody int restaurant_id)
-    {
-        return null;
-    }
-
-    //Returns List<Ingredient> in the Response
-    @GetMapping("/ingredients/id={menu_item_id}")
-    public Response getIngredients(@PathVariable(value="menu_item_id") int menu_item_id)
     {
         return null;
     }

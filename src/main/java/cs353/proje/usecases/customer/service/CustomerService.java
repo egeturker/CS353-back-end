@@ -85,5 +85,11 @@ public class CustomerService {
             return new Response(false, "No menu found", null);
     }
 
-
+    public Response getIngredients(int menu_item_id) {
+        List<Ingredient> ingredients = customerRepository.getIngredients(menu_item_id);
+        if(ingredients.size() >= 1)
+            return new Response(true, "Success", ingredients);
+        else
+            return new Response(false, "No ingredients found", null);
+    }
 }
