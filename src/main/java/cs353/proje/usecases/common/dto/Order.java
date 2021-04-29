@@ -11,7 +11,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class Order {
-
     private int orderId;
     private int restaurantId;
     private int customerId;

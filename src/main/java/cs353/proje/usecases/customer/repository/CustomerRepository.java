@@ -1,9 +1,7 @@
 package cs353.proje.usecases.customer.repository;
 
-import cs353.proje.usecases.common.dto.CategoryMenu;
-import cs353.proje.usecases.common.dto.Coupon;
+import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.common.dto.MenuItem;
-import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.Restaurant;
 import cs353.proje.usecases.loginregister.dto.User;
@@ -81,6 +79,16 @@ public class CustomerRepository {
         order.setRestaurantName(rs.getString("restaurant_name"));
 
         return order;
+    };
+
+    RowMapper<Ingredient> ingredientRowMapper = (rs, rowNum) ->{
+        Ingredient ingredient = new Ingredient();
+        ingredient.setMenuItemId(rs.getInt("menu_item_id"));
+        ingredient.setIngredientId(rs.getInt("ingredient_id"));
+        ingredient.setIngredientName(rs.getString("ingredient_name"));
+        ingredient.setAdditionalPrice(rs.getDouble("additional_price"));
+
+        return ingredient;
     };
 
     RowMapper<Coupon> couponRowMapper = (rs, rowNum) ->{
@@ -204,7 +212,7 @@ public class CustomerRepository {
         CategoryMenu category_item = new CategoryMenu();
         String food_category;
 
-       for(int i = 0; i < menu.size(); i++) {
+       for (int i = 0; i < menu.size(); i++) {
             food_category = menu.get(i).getFoodCategory();
             category_item.setCategoryMenuItems(getRestaurantMenu(restaurant_id, food_category));
             category_item.setCategory(food_category);
@@ -214,5 +222,12 @@ public class CustomerRepository {
         }
 
         return category_menu;
+    }
+
+    public List<Ingredient> getIngredients(int menu_item_id) {
+        String sql = "SELECT * FROM ingredient " +
+                     "WHERE menu_item_id = ? ";
+        Object[] params = {menu_item_id};
+        return jdbcTemplate.query(sql, params, ingredientRowMapper);
     }
 }
