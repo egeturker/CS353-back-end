@@ -89,6 +89,7 @@ public class CustomerRepository {
         ingredient.setMenuItemId(rs.getInt("menu_item_id"));
         ingredient.setIngredientId(rs.getInt("ingredient_id"));
         ingredient.setIngredientName(rs.getString("ingredient_name"));
+        ingredient.setDefaultIngredient(rs.getBoolean("default_ingredient"));
         ingredient.setAdditionalPrice(rs.getDouble("additional_price"));
 
         return ingredient;
@@ -105,6 +106,15 @@ public class CustomerRepository {
 
         return coupon;
     };
+
+    RowMapper<Favorite> favoriteRowMapper = (rs, rowNum) ->{
+        Favorite favorite = new Favorite();
+        favorite.setCustomerId(rs.getInt("customer_id"));
+        favorite.setRestaurantId(rs.getInt("restaurant_id"));
+
+        return favorite;
+    };
+
     public List<Restaurant> getAllRestaurants(){
         String sql = "SELECT * FROM restaurant";
         return jdbcTemplate.query(sql, restaurantRowMapper);
@@ -288,9 +298,16 @@ public class CustomerRepository {
     }
 
     public boolean addFavorite(int customer_id, int restaurant_id) {
-        String sql_ingredient = "INSERT INTO favorite " +
+        String sql = "INSERT INTO favorite " +
                                 "VALUES (?, ?) ";
         Object[] params = {customer_id, restaurant_id};
-        return jdbcTemplate.update(sql_ingredient, params) == 1;
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public List<Favorite> getFavorite(int customer_id) {
+        String sql = "SELECT * FROM favorite " +
+                     "WHERE customer_id = ? ";
+        Object[] params = {customer_id};
+        return jdbcTemplate.query(sql, params, favoriteRowMapper);
     }
 }

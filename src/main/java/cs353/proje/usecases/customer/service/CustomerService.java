@@ -107,4 +107,12 @@ public class CustomerService {
         else
             return new Response(false, "Order not placed", null);
     }
+
+    public Response getFavorite(int customer_id) {
+        List<Favorite> favorite = customerRepository.getFavorite(customer_id);
+        if(favorite.size() >= 1)
+            return new Response(true, "Success", favorite);
+        else
+            return new Response(false, "No favorite restaurant found", null);
+    }
 }

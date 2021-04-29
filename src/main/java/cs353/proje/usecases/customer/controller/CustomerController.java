@@ -119,5 +119,11 @@ public class CustomerController {
         return customerService.addFavorite(customer_id, restaurant_id);
     }
 
+    @GetMapping("/getFavorite/customer_id={customer_id}")
+    public Response getFavorite(@PathVariable(value="customer_id") int customer_id)
+    {
+        return customerService.getFavorite(customer_id);
+    }
+
 
 }
