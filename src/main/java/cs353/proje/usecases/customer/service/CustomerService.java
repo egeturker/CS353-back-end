@@ -2,7 +2,6 @@ package cs353.proje.usecases.customer.service;
 
 import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.customer.dto.Customer;
-import cs353.proje.usecases.customer.dto.OrderFromCustomer;
 import cs353.proje.usecases.customer.dto.Restaurant;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,12 +91,5 @@ public class CustomerService {
             return new Response(true, "Success", ingredients);
         else
             return new Response(false, "No ingredients found", null);
-    }
-
-    public Response createNewOrder(OrderFromCustomer order) {
-        if(customerRepository.createNewOrder(order))
-            return new Response(true, "Success", null);
-        else
-            return new Response(false, "Order not placed", null);
     }
 }
