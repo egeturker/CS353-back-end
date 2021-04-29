@@ -105,18 +105,17 @@ public class CustomerController {
     }
 
     //Kaan
+    @PostMapping("/order")
+    public Response createNewOrder(@RequestBody OrderFromCustomer order)
+    {
+        return customerService.createNewOrder(order);
+    }
+
+    //Kaan
     @PostMapping("/addFavorite/customer_id={customer_id}")
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
                                 @RequestBody int restaurant_id)
     {
         return null;
     }
-
-    //Kaan
-    @PostMapping("/order")
-    public Response createNewOrder(@RequestBody OrderFromCustomer order)
-    {
-        return null;
-    }
-
 }

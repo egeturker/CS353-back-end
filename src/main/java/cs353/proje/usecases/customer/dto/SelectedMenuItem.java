@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SelectedMenuItem {
-
-    private MenuItem menuItem;
+    private int orderId;
+    private int menuItemId;
     private int quantity;
 
     //ingredient_ids of the selected ingredients for this menu item.

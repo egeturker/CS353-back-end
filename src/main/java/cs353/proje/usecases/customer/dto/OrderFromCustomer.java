@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class OrderFromCustomer {
-
     private int restaurantId;
     private int customerId;
     private double price;
