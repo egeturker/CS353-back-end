@@ -3,7 +3,9 @@ package cs353.proje.usecases.customer.repository;
 import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.customer.dto.OrderFromCustomer;
 import cs353.proje.usecases.customer.dto.Restaurant;
+import cs353.proje.usecases.customer.dto.SelectedMenuItem;
 import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -229,5 +231,56 @@ public class CustomerRepository {
                      "WHERE menu_item_id = ? ";
         Object[] params = {menu_item_id};
         return jdbcTemplate.query(sql, params, ingredientRowMapper);
+    }
+
+
+    public boolean createNewOrder(OrderFromCustomer order) {
+        String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, optional_delivery_time) " +
+                "VALUES (?, ?, ?, ?, ?) ";
+        Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), order.getOrderTime(),
+                order.getOptionalDeliveryTime()};
+        int result_order = jdbcTemplate.update(sql_order, params_order);
+
+        String sql_order_id = "SELECT * FROM order " +
+                "WHERE restaurant_id = ? AND customer_id = ? AND order_time = ? ";
+        Object[] params_order_id = {order.getRestaurantId(), order.getCustomerId(), order.getOrderTime()};
+        List<Order> order_id_list = jdbcTemplate.query(sql_order_id, params_order_id, orderRowMapper);
+
+        if(result_order == 1 && order_id_list.size() == 1) {
+            List<SelectedMenuItem> selected_menu_items = order.getSelectedMenuItems();
+            int order_id =  order_id_list.get(0).getOrderId();
+            int size = selected_menu_items.size();
+            boolean result = true;
+            for(int i = 0; i < size && result; i++){
+                result = addSelectedMenuItems(selected_menu_items.get(i), order_id);
+            }
+            return result;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean addSelectedMenuItems(SelectedMenuItem selected_menu_items, int order_id) {
+        String sql_menu_item = "INSERT INTO selected_menu_item (order_id, menu_item_id, quantity) " +
+                "VALUES (?, ?, ?) ";
+        Object[] params = {order_id, selected_menu_items.getMenuItemId(), selected_menu_items.getQuantity()};
+        jdbcTemplate.update(sql_menu_item, params);
+
+        List<Integer> selected_ingredient = selected_menu_items.getSelectedIngredients();
+        int ingredient_list_size = selected_menu_items.getSelectedIngredients().size();
+        int menu_item_id = selected_menu_items.getMenuItemId();
+        boolean result = true;
+        for(int i = 0; i <ingredient_list_size && result; i++){
+            result = addSelectedIngredients(order_id, menu_item_id, selected_ingredient.get(i));
+        }
+        return result;
+    }
+
+    private boolean addSelectedIngredients(int order_id, int menu_item_id, Integer ingredient_id) {
+        String sql_ingredient = "INSERT INTO selected_ingredient (order_id, menu_item_id, ingredient_id) " +
+                "VALUES (?, ?, ?) ";
+        Object[] params = {order_id, menu_item_id, ingredient_id};
+        return jdbcTemplate.update(sql_ingredient, params) == 1;
     }
 }
