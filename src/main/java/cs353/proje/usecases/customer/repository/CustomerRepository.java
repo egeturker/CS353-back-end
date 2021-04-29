@@ -286,4 +286,11 @@ public class CustomerRepository {
         Object[] params = {order_id, menu_item_id, ingredient_id};
         return jdbcTemplate.update(sql_ingredient, params) == 1;
     }
+
+    public boolean addFavorite(int customer_id, int restaurant_id) {
+        String sql_ingredient = "INSERT INTO favorite " +
+                                "VALUES (?, ?) ";
+        Object[] params = {customer_id, restaurant_id};
+        return jdbcTemplate.update(sql_ingredient, params) == 1;
+    }
 }

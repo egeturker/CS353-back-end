@@ -100,4 +100,11 @@ public class CustomerService {
         else
             return new Response(false, "Order not placed", null);
     }
+
+    public Response addFavorite(int customer_id, int restaurant_id) {
+        if(customerRepository.addFavorite(customer_id, restaurant_id))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Order not placed", null);
+    }
 }

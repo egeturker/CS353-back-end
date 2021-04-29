@@ -116,7 +116,7 @@ public class CustomerController {
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
                                 @RequestBody int restaurant_id)
     {
-        return null;
+        return customerService.addFavorite(customer_id, restaurant_id);
     }
 
 
