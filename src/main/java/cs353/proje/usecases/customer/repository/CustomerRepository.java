@@ -249,7 +249,7 @@ public class CustomerRepository {
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
-                "VALUES (?, ?, ?, ?, ?) ";
+                "VALUES (?, ?, ?, ?, ?, ?, ?) ";
         Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), timestamp,
                 "order taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
         int result_order = jdbcTemplate.update(sql_order, params_order);
