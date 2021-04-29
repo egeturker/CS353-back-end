@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.awt.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -228,22 +229,24 @@ public class CustomerRepository {
 
     public List<Ingredient> getIngredients(int menu_item_id) {
         String sql = "SELECT * FROM ingredient " +
-                     "WHERE menu_item_id = ? ";
+                     "WHERE menu_item_id = ?";
         Object[] params = {menu_item_id};
         return jdbcTemplate.query(sql, params, ingredientRowMapper);
     }
 
 
     public boolean createNewOrder(OrderFromCustomer order) {
-        String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, optional_delivery_time) " +
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
                 "VALUES (?, ?, ?, ?, ?) ";
-        Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), order.getOrderTime(),
-                order.getOptionalDeliveryTime()};
+        Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), timestamp,
+                "order taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
         int result_order = jdbcTemplate.update(sql_order, params_order);
 
         String sql_order_id = "SELECT * FROM order " +
                 "WHERE restaurant_id = ? AND customer_id = ? AND order_time = ? ";
-        Object[] params_order_id = {order.getRestaurantId(), order.getCustomerId(), order.getOrderTime()};
+        Object[] params_order_id = {order.getRestaurantId(), order.getCustomerId(), timestamp};
         List<Order> order_id_list = jdbcTemplate.query(sql_order_id, params_order_id, orderRowMapper);
 
         if(result_order == 1 && order_id_list.size() == 1) {

@@ -14,8 +14,8 @@ public class OrderFromCustomer {
     private int restaurantId;
     private int customerId;
     private double price;
-    private Timestamp orderTime;
     private Timestamp optionalDeliveryTime;
+    private String paymentMethod;
 
     List<SelectedMenuItem> selectedMenuItems;
 }

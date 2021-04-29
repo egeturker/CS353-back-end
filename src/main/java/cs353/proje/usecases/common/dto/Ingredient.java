@@ -11,5 +11,6 @@ public class Ingredient {
     private int menuItemId;
     private int ingredientId;
     private String ingredientName;
+    private boolean defaultIngredient;
     private double additionalPrice;
 }
