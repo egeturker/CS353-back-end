@@ -17,6 +17,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class CustomerRepository {
@@ -110,12 +112,169 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, restaurantRowMapper);
     }
 
-    public List<Restaurant> getRestaurantsWithFilter(int customer_id, String open, double minRating, double maxRating) {
-        String sql = "SELECT * FROM restaurant INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
-                     "INNER JOIN region ON region.region_id = serves_at.region_id " +
-                     "INNER JOIN customer ON region.region_id = ? " +
-                     "WHERE status = ? AND rating BETWEEN ? AND ?";
-        Object[] params = {customer_id,open, minRating, maxRating};
+    public List<Restaurant> getFavoriteRestaurants(int customerId){
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND restaurant.restaurant_id IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customerId, customerId};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
+
+    public List<Restaurant> getNonFavoriteRestaurants(int customerId){
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND restaurant.restaurant_id NOT IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customerId, customerId};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
+
+    public List<Restaurant> getFavoriteRestaurantsWithFilter(int customer_id, String restaurantStatus,
+                                                             double minRating, double maxRating) {
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND (courier.status = 'Available') " +
+                "AND (restaurant.status = ?) " +
+                "AND restaurant.rating BETWEEN ? AND ? " +
+                "AND restaurant.restaurant_id IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customer_id, restaurantStatus, minRating, maxRating, customer_id};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
+
+    public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, String restaurantStatus,
+                                                             double minRating, double maxRating) {
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND (courier.status = 'Available') " +
+                "AND (restaurant.status = ?) " +
+                "AND restaurant.rating BETWEEN ? AND ? " +
+                "AND restaurant.restaurant_id NOT IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customer_id,  restaurantStatus, minRating, maxRating, customer_id};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
+
+    public List<Restaurant> getFavoriteRestaurantsWithSearchKey(int customerId, String searchKey){
+        searchKey = "%" + searchKey + "%";
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND (courier.status = 'Available')" +
+                "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
+                "AND restaurant.restaurant_id IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customerId, searchKey, searchKey, searchKey, customerId};
+        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+    }
+
+    public List<Restaurant> getNonFavoriteRestaurantsWithSearchKey(int customerId, String searchKey){
+        searchKey = "%" + searchKey + "%";
+        String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
+                " description, restaurant_category, restaurant.status, " +
+                "MIN(operates_in.fee), MAX(operates_in.fee) FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN region ON region.region_id = serves_at.region_id " +
+                "INNER JOIN customer ON customer.region_id = serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = region.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "WHERE restaurant.restaurant_id IN " +
+                "(SELECT DISTINCT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
+                "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
+                "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
+                "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
+                "WHERE (customer.customer_id = ?) " +
+                "AND (courier.status = 'Available')" +
+                "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
+                "AND restaurant.restaurant_id NOT IN " +
+                "(SELECT restaurant.restaurant_id FROM restaurant " +
+                "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
+                "WHERE favorite.customer_id = ?) " +
+                ")";
+        Object[] params = {customerId, searchKey, searchKey, searchKey, customerId};
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 

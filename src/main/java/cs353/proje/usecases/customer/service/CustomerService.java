@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CustomerService {
@@ -22,13 +24,51 @@ public class CustomerService {
 
         return new Response(true, "No restaurants found to be listed", allRestaurants);
     }
+
+    public Response getRestaurants(int customerId){
+        List<Restaurant> favoriteRestaurants = customerRepository.getFavoriteRestaurants(customerId);
+        List<Restaurant> nonFavoriteRestaurants = customerRepository.getNonFavoriteRestaurants(customerId);
+        List<Restaurant> restaurants =  Stream.concat(favoriteRestaurants.stream(), nonFavoriteRestaurants.stream()).collect(Collectors.toList());
+        return new Response(true, "Restaurants listed", restaurants);
+    }
     
-    public Response getRestaurantsWithFilter(int customer_id, String open, double minRating, double maxRating) {
-        List<Restaurant> selected_restaurants = customerRepository.getRestaurantsWithFilter(customer_id, open, minRating, maxRating);
-        if(selected_restaurants.size()>=1)
-            return new Response(true, "Success", selected_restaurants);
+    public Response getRestaurantsWithFilter(int customerId, String open, double minRating, double maxRating) {
+        List<Restaurant> favoriteRestaurantsWithFilter = customerRepository.getFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
+        List<Restaurant> nonFavoriteRestaurantsWithFilter = customerRepository.getNonFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
+
+        if (favoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
+            if (nonFavoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
+                return new Response(false, "No restaurants found matching the filter", null);
+            else
+                return new Response(true, "Success", nonFavoriteRestaurantsWithFilter);
+
+        if (nonFavoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
+            return new Response(true, "Success", favoriteRestaurantsWithFilter);
+
+        List<Restaurant> restaurantsWithFilter =  Stream.concat(favoriteRestaurantsWithFilter.stream(),
+                nonFavoriteRestaurantsWithFilter.stream()).collect(Collectors.toList());
+        if(restaurantsWithFilter.size()>=1)
+            return new Response(true, "Success", restaurantsWithFilter);
         else
             return new Response(false, "No restaurants found matching the filters", null);
+    }
+
+    public Response getRestaurantsWithSearch(int customerId, String searchKey){
+        List<Restaurant> favoriteRestaurantsWithSearch = customerRepository.getFavoriteRestaurantsWithSearchKey(customerId, searchKey);
+        List<Restaurant> nonFavoriteRestaurantsWithSearch = customerRepository.getNonFavoriteRestaurantsWithSearchKey(customerId, searchKey);
+
+        if (favoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
+            if (nonFavoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
+                return new Response(false, "No restaurants found matching the searchkey", null);
+            else
+                return new Response(true, "Success", nonFavoriteRestaurantsWithSearch);
+
+        if (nonFavoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
+            return new Response(true, "Success", favoriteRestaurantsWithSearch);
+
+        List<Restaurant> restaurantsWithSearch =  Stream.concat(favoriteRestaurantsWithSearch.stream(),
+                nonFavoriteRestaurantsWithSearch.stream()).collect(Collectors.toList());
+        return new Response(true, "Success", restaurantsWithSearch);
     }
 
     public Response getCustomerData(int customerId){
