@@ -48,24 +48,33 @@ public class LoginRepository {
             return null;
     }
 
-    public int addUser(User registerInfo)
-    {
+    public boolean emailExists(User registerInfo){
         String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
         Object[] paramEmail = {registerInfo.getEmail()};
         if(jdbcTemplate.queryForObject(sql,paramEmail,Integer.class) > 0)
-            return -2;
+            return true;
+        return false;
+    }
 
-        sql = "SELECT COUNT(*) FROM user WHERE username = ?";
+    public boolean usernameExists(User registerInfo){
+        String sql = "SELECT COUNT(*) FROM user WHERE username = ?";
         Object[] paramUsername = {registerInfo.getUsername()};
         if(jdbcTemplate.queryForObject(sql,paramUsername, Integer.class) > 0)
-            return -3;
+            return true;
+        return false;
+    }
 
-        sql = "SELECT COUNT(*) FROM user WHERE telephone = ?";
+    public boolean telephoneExists(User registerInfo){
+        String sql = "SELECT COUNT(*) FROM user WHERE telephone = ?";
         Object[] paramTelephone = {registerInfo.getTelephone()};
         if(jdbcTemplate.queryForObject(sql,paramTelephone, Integer.class) > 0)
-            return -4;
+            return true;
+        return false;
+    }
 
-        sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
+    public int addUser(User registerInfo)
+    {
+        String sql = "INSERT INTO user(name, surname, email, username, password, telephone, registration_date, image, user_type) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Object [] params = {registerInfo.getName(), registerInfo.getSurname(), registerInfo.getEmail(),

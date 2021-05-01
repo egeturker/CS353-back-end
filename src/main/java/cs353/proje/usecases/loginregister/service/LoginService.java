@@ -25,19 +25,16 @@ public class LoginService {
     }
 
     public Response registerCustomer(Customer customerRegisterInfo) {
+        if(loginRepository.emailExists(customerRegisterInfo))
+            return new Response(false, "A user with given email already exists", null);
+        if(loginRepository.usernameExists(customerRegisterInfo))
+            return new Response(false, "A user with given username already exists", null);
+        if(loginRepository.telephoneExists(customerRegisterInfo))
+            return new Response(false, "A user with given telephone number already exists", null);
+
         int user_id = loginRepository.addUser(customerRegisterInfo);
         if (user_id < 0)
-        {
-            switch(user_id){
-                case -2:
-                    return new Response(false, "A user with given email already exists", null);
-                case -3:
-                    return new Response(false, "A user with given username already exists", null);
-                case -4:
-                    return new Response(false, "A user with given telephone number already exists", null);
-            }
             return new Response(false, "Registration is unsuccessful", null);
-        }
         else
         {
             customerRegisterInfo.setUserId(user_id);
