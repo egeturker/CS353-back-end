@@ -108,7 +108,7 @@ public class LoginRepository {
         String sql = "INSERT INTO courier(courier_id, status, rating) " +
                 "VALUES(?, ?, ?)";
 
-        Object [] params = {registerInfo.getUserId(), "Not Available", 0.00};
+        Object [] params = {registerInfo.getUserId(), 0, 0.00};
 
         return jdbcTemplate.update(sql, params);
     }
@@ -118,7 +118,7 @@ public class LoginRepository {
         String sql = "INSERT INTO restaurant(owner_id, restaurant_name, rating, address, description, restaurant_category, status) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
-        Object [] params = {owner_id, "RESTAURANT NAME NOT SET", 0.00, "ADDRESS NOT SET", "", "CATEGORY NOT SET", "Closed"};
+        Object [] params = {owner_id, "RESTAURANT NAME NOT SET", 0.00, "ADDRESS NOT SET", "", "CATEGORY NOT SET", 0};
 
         return jdbcTemplate.update(sql, params);
     }
