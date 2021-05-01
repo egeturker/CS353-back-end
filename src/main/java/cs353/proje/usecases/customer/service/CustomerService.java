@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,7 +39,7 @@ public class CustomerService {
 
         if (favoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
             if (nonFavoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
-                return new Response(false, "No restaurants found matching the filter", null);
+                return new Response(true, "No restaurants found matching the filter", Collections.emptyList());
             else
                 return new Response(true, "Success", nonFavoriteRestaurantsWithFilter);
 
@@ -50,7 +51,7 @@ public class CustomerService {
         if(restaurantsWithFilter.size()>=1)
             return new Response(true, "Success", restaurantsWithFilter);
         else
-            return new Response(false, "No restaurants found matching the filters", null);
+            return new Response(true, "No restaurants found matching the filters", Collections.emptyList());
     }
 
     public Response getRestaurantsWithSearch(int customerId, String searchKey){
@@ -59,7 +60,7 @@ public class CustomerService {
 
         if (favoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
             if (nonFavoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
-                return new Response(false, "No restaurants found matching the searchkey", null);
+                return new Response(true, "No restaurants found matching the searchkey", Collections.emptyList());
             else
                 return new Response(true, "Success", nonFavoriteRestaurantsWithSearch);
 
@@ -68,7 +69,10 @@ public class CustomerService {
 
         List<Restaurant> restaurantsWithSearch =  Stream.concat(favoriteRestaurantsWithSearch.stream(),
                 nonFavoriteRestaurantsWithSearch.stream()).collect(Collectors.toList());
-        return new Response(true, "Success", restaurantsWithSearch);
+        if(restaurantsWithSearch.size()>=1)
+            return new Response(true, "Success", restaurantsWithSearch);
+        else
+            return new Response(true, "No restaurants found matching the filters", Collections.emptyList());
     }
 
     public Response getCustomerData(int customerId){
