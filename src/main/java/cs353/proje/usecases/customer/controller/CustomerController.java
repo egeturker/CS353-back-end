@@ -69,14 +69,6 @@ public class CustomerController {
     }
 
     //Kaan
-    @GetMapping("/coupons/id={id}")
-    public Response getCoupons(@PathVariable(value="id") int customer_id)
-    {
-
-        return customerService.getCoupons(customer_id);
-    }
-
-    //Kaan
     @GetMapping("/restaurantInfo/id={id}")
     public Response getRestaurantInfo(@PathVariable(value="id") int restaurant_id)
     {
@@ -109,6 +101,13 @@ public class CustomerController {
     public Response createNewOrder(@RequestBody OrderFromCustomer order)
     {
         return customerService.createNewOrder(order);
+    }
+
+    @PostMapping("/removeFavorite/customer_id={customer_id}")
+    public Response removeFavorite(@PathVariable(value="customer_id") int customer_id,
+                                @RequestBody int restaurant_id)
+    {
+        return null;
     }
 
     //Kaan

@@ -24,6 +24,8 @@ public class CustomerRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
+
     RowMapper<Restaurant> restaurantRowMapper = (rs, rowNum) ->{
         Restaurant restaurant = new Restaurant();
         restaurant.setRestaurantId(rs.getInt("restaurant_id"));
@@ -93,18 +95,6 @@ public class CustomerRepository {
         ingredient.setAdditionalPrice(rs.getDouble("additional_price"));
 
         return ingredient;
-    };
-
-    RowMapper<Coupon> couponRowMapper = (rs, rowNum) ->{
-        Coupon coupon = new Coupon();
-        coupon.setCouponId(rs.getString("coupon_id"));
-        coupon.setDiscountAmount(rs.getInt("discount_amount"));
-        coupon.setCustomerId(rs.getInt("customer_id"));
-        coupon.setRestaurantId(rs.getInt("restaurant_id"));
-        coupon.setUsed(false);
-        coupon.setRestaurantName(getRestaurantInfo(coupon.getRestaurantId()).getRestaurant_name());
-
-        return coupon;
     };
 
     RowMapper<Favorite> favoriteRowMapper = (rs, rowNum) ->{
@@ -177,15 +167,6 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, params, orderRowMapper);
     }
 
-
-    public List<Coupon> getCoupons(int customer_id) {
-        String sql = "SELECT * " +
-                     "FROM coupon INNER JOIN restaurant ON coupon.restaurant_id = restaurant.restaurant_id " +
-                     "WHERE customer_id = ? AND used <> true";
-        Object[] params = {customer_id};
-        return jdbcTemplate.query(sql, params, couponRowMapper);
-    }
-
     public Restaurant getRestaurantInfo(int restaurant_id) {
         String sql = "SELECT * " +
                      "FROM restaurant " +
@@ -254,14 +235,12 @@ public class CustomerRepository {
                 "order taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
         int result_order = jdbcTemplate.update(sql_order, params_order);
 
-        String sql_order_id = "SELECT * FROM order " +
-                "WHERE restaurant_id = ? AND customer_id = ? AND order_time = ? ";
-        Object[] params_order_id = {order.getRestaurantId(), order.getCustomerId(), timestamp};
-        List<Order> order_id_list = jdbcTemplate.query(sql_order_id, params_order_id, orderRowMapper);
+        String sql_order_id = "SELECT LAST_INSERT_ID()";
+        Object[] params_order_id = {};
+        int order_id = jdbcTemplate.queryForObject(sql_order_id, integerRowMapper);
 
-        if(result_order == 1 && order_id_list.size() == 1) {
+        if(result_order == 1 && order_id > 0) {
             List<SelectedMenuItem> selected_menu_items = order.getSelectedMenuItems();
-            int order_id =  order_id_list.get(0).getOrderId();
             int size = selected_menu_items.size();
             boolean result = true;
             for(int i = 0; i < size && result; i++){

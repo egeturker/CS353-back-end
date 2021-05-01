@@ -54,14 +54,6 @@ public class CustomerService {
             return new Response(false, "No orders found", null);
     }
 
-    public Response getCoupons(int customer_id) {
-        List<Coupon> coupons = customerRepository.getCoupons(customer_id);
-        if(coupons.size() >= 1)
-            return new Response(true, "Success", coupons);
-        else
-            return new Response(false, "No coupons found", null);
-    }
-
     public Response getRestaurantInfo(int restaurant_id) {
         Restaurant restaurant_info = customerRepository.getRestaurantInfo(restaurant_id);
         if(restaurant_info != null)
