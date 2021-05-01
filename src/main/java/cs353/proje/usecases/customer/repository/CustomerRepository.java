@@ -179,7 +179,7 @@ public class CustomerRepository {
                 "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "WHERE (customer.customer_id = ?) " +
-                "AND (courier.status = 'Available') " +
+                "AND (courier.status = 1) " +
                 "AND (restaurant.status = ?) " +
                 "AND restaurant.rating BETWEEN ? AND ? " +
                 "AND restaurant.restaurant_id IN " +
@@ -208,7 +208,7 @@ public class CustomerRepository {
                 "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "WHERE (customer.customer_id = ?) " +
-                "AND (courier.status = 'Available') " +
+                "AND (courier.status = 1) " +
                 "AND (restaurant.status = ?) " +
                 "AND restaurant.rating BETWEEN ? AND ? " +
                 "AND restaurant.restaurant_id NOT IN " +
@@ -238,7 +238,7 @@ public class CustomerRepository {
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
                 "WHERE (customer.customer_id = ?) " +
-                "AND (courier.status = 'Available')" +
+                "AND (courier.status = 1)" +
                 "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
                 "AND restaurant.restaurant_id IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
@@ -267,7 +267,7 @@ public class CustomerRepository {
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
                 "WHERE (customer.customer_id = ?) " +
-                "AND (courier.status = 'Available')" +
+                "AND (courier.status = 1)" +
                 "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
                 "AND restaurant.restaurant_id NOT IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
