@@ -162,7 +162,7 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 
-    public List<Restaurant> getFavoriteRestaurantsWithFilter(int customer_id, String restaurantStatus,
+    public List<Restaurant> getFavoriteRestaurantsWithFilter(int customer_id, boolean open,
                                                              double minRating, double maxRating) {
         String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status, " +
@@ -187,11 +187,11 @@ public class CustomerRepository {
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
                 "WHERE favorite.customer_id = ?) " +
                 ")";
-        Object[] params = {customer_id, restaurantStatus, minRating, maxRating, customer_id};
+        Object[] params = {customer_id, open, minRating, maxRating, customer_id};
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 
-    public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, String restaurantStatus,
+    public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, boolean open,
                                                              double minRating, double maxRating) {
         String sql = "SELECT  restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status, " +
@@ -216,7 +216,7 @@ public class CustomerRepository {
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
                 "WHERE favorite.customer_id = ?) " +
                 ")";
-        Object[] params = {customer_id,  restaurantStatus, minRating, maxRating, customer_id};
+        Object[] params = {customer_id,  open, minRating, maxRating, customer_id};
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 

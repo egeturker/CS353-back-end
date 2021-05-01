@@ -32,7 +32,7 @@ public class CustomerService {
         return new Response(true, "Restaurants listed", restaurants);
     }
     
-    public Response getRestaurantsWithFilter(int customerId, String open, double minRating, double maxRating) {
+    public Response getRestaurantsWithFilter(int customerId, boolean open, double minRating, double maxRating) {
         List<Restaurant> favoriteRestaurantsWithFilter = customerRepository.getFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
         List<Restaurant> nonFavoriteRestaurantsWithFilter = customerRepository.getNonFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
 
