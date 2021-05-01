@@ -1,6 +1,8 @@
 package cs353.proje.usecases.common.controller;
 
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.common.dto.Review;
+import cs353.proje.usecases.common.dto.ReviewFromCustomer;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("ReviewController")
@@ -13,13 +15,15 @@ public class ReviewController {
     @GetMapping("/getReview/order_id={id}")
     public Response getReview(@PathVariable(value="id") int order_id)
     {
+        Review review;
         return null;
     }
 
     //Customer makes a new review for the given order id
     //Only one review per order is possible.
     @PostMapping("/makeReview/order_id={id}")
-    public Response makeReview(@PathVariable(value="id") int order_id)
+    public Response makeReview(@PathVariable(value="id") int order_id,
+                                @RequestBody ReviewFromCustomer review)
     {
         return null;
     }

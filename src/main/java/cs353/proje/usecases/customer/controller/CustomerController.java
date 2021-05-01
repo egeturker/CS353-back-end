@@ -48,14 +48,14 @@ public class CustomerController {
     @GetMapping("/restaurants/id={id}")
     public Response getRestaurants(@PathVariable(value="id") int customer_id)
     {
-        return null;
+        return customerService.getAllRestaurants();
     }
 
     @GetMapping("/restaurants/id={id}/search={searchkey}")
     public Response getRestaurantsWithSearch(@PathVariable(value="id") int customer_id,
                                              @PathVariable(value="searchkey") String searchkey)
     {
-        return null;
+        return customerService.getAllRestaurants();
     }
 
     //Kaan
