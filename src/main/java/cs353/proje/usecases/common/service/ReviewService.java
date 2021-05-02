@@ -29,8 +29,11 @@ public class ReviewService{
             return new Response(false, "Review for the order already exists", null);
         else{
             int reviewId = reviewRepository.makeReview(orderId, review);
-            if(reviewId > 0)
+            if(reviewId > 0){
+                reviewRepository.updateRestaurantRating(review.getRestaurantScore(),orderId);
+                reviewRepository.updateCourierRating(review.getCourierScore(),orderId);
                 return new Response(true, "Review made", reviewId);
+            }
             else
                 return new Response(false, "Unsuccessful", null);
         }

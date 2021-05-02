@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
@@ -30,6 +32,7 @@ public class ReviewRepository {
     };
 
     RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
+
 
     public List<Review> getReview( int orderId){
         String sql = "SELECT * FROM review WHERE order_id = ?";
@@ -93,4 +96,42 @@ public class ReviewRepository {
         return jdbcTemplate.query(sql, params, reviewRowMapper);
     }
 
+    public boolean updateRestaurantRating(int score, int orderId){
+        String sql = "SELECT COUNT(*), restaurant.restaurant_id, rating FROM `order` " +
+                "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
+                "WHERE restaurant.restaurant_id IN  " +
+                "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
+
+        Object[] params = {orderId};
+
+        List<Integer> sqlData  = jdbcTemplate.queryForList(sql, params,Integer.class);
+
+        //(Old rating * number of old orders + review score) / (number of old orders + 1)
+        int newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+
+        sql = "UPDATE restaurant SET rating = ? WHERE restaurant_id = ?";
+        Object[] params2 = {newRating, sqlData.get(1)};
+
+        return(jdbcTemplate.update(sql, params2) > 0);
+    }
+
+    public boolean updateCourierRating(int score, int orderId){
+        String sql = "SELECT COUNT(*), assigned_to.courier_id, rating FROM assigned_to " +
+                "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
+                "WHERE courier.courier_id IN  " +
+                "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
+                "AND decision = 1";
+
+        Object[] params = {orderId};
+
+        List<Integer> sqlData  = jdbcTemplate.queryForList(sql, params,Integer.class);
+
+        //(Old rating * number of old orders + review score) / (number of old orders + 1)
+        int newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+
+        sql = "UPDATE courier SET rating = ? WHERE courier_id = ?";
+        Object[] params2 = {newRating, sqlData.get(1)};
+
+        return(jdbcTemplate.update(sql, params2) > 0);
+    }
 }
