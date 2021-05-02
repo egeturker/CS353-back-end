@@ -124,5 +124,10 @@ public class CustomerController {
         return customerService.getFavorite(customer_id);
     }
 
+    @GetMapping("/getOrderDetails/order_id={order_id}")
+    public Response getOrderDetails(@PathVariable(value="order_id") int order_id)
+    {
+        return null;
+    }
 
 }

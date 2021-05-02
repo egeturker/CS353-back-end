@@ -5,20 +5,16 @@ import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.OrderFromCustomer;
 import cs353.proje.usecases.customer.dto.Restaurant;
-import cs353.proje.usecases.customer.dto.SelectedMenuItem;
-import cs353.proje.usecases.loginregister.dto.User;
+import cs353.proje.usecases.customer.dto.SelectedMenuItemFromCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.awt.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 public class CustomerRepository {
@@ -399,7 +395,7 @@ public class CustomerRepository {
         int order_id = jdbcTemplate.queryForObject(sql_order_id, integerRowMapper);
 
         if(result_order == 1 && order_id > 0) {
-            List<SelectedMenuItem> selected_menu_items = order.getSelectedMenuItems();
+            List<SelectedMenuItemFromCustomer> selected_menu_items = order.getSelectedMenuItemFromCustomers();
             int size = selected_menu_items.size();
             boolean result = true;
             for(int i = 0; i < size && result; i++){
@@ -412,7 +408,7 @@ public class CustomerRepository {
         }
     }
 
-    private boolean addSelectedMenuItems(SelectedMenuItem selected_menu_items, int order_id) {
+    private boolean addSelectedMenuItems(SelectedMenuItemFromCustomer selected_menu_items, int order_id) {
         String sql_menu_item = "INSERT INTO selected_menu_item (order_id, menu_item_id, quantity) " +
                 "VALUES (?, ?, ?) ";
         Object[] params = {order_id, selected_menu_items.getMenuItemId(), selected_menu_items.getQuantity()};

@@ -16,6 +16,7 @@ public class OrderFromCustomer {
     private double price;
     private Timestamp optionalDeliveryTime;
     private String paymentMethod;
+    private String coupon;
 
-    List<SelectedMenuItem> selectedMenuItems;
+    List<SelectedMenuItemFromCustomer> selectedMenuItemFromCustomers;
 }

@@ -20,5 +20,6 @@ public class Order {
     private String status;
     private Timestamp optionalDeliveryTime;
     private String restaurantName;
+    private String coupon;
 
 }
