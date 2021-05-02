@@ -6,6 +6,7 @@ import cs353.proje.usecases.common.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -53,6 +54,6 @@ public class ReviewService{
         if(reviews.size() >= 1)
             return new Response(true, "Reviews for the restaurant returned", reviews);
         else
-            return new Response(true, "No reviews found for the restaurant", null);
+            return new Response(true, "No reviews found for the restaurant", Collections.emptyList());
     }
 }
