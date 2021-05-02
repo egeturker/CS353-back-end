@@ -391,7 +391,7 @@ public class CustomerRepository {
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) ";
         Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), timestamp,
-                "order taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
+                "Order Taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
         int result_order = jdbcTemplate.update(sql_order, params_order);
 
         String sql_order_id = "SELECT LAST_INSERT_ID()";
