@@ -104,10 +104,10 @@ public class ReviewRepository {
 
         Object[] params = {orderId};
 
-        List<Integer> sqlData  = jdbcTemplate.queryForList(sql, params,Integer.class);
+        List<Double> sqlData  = jdbcTemplate.queryForList(sql, params,Double.class);
 
         //(Old rating * number of old orders + review score) / (number of old orders + 1)
-        int newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+        double newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
 
         sql = "UPDATE restaurant SET rating = ? WHERE restaurant_id = ?";
         Object[] params2 = {newRating, sqlData.get(1)};
@@ -124,10 +124,10 @@ public class ReviewRepository {
 
         Object[] params = {orderId};
 
-        List<Integer> sqlData  = jdbcTemplate.queryForList(sql, params,Integer.class);
+        List<Double> sqlData  = jdbcTemplate.queryForList(sql, params,Double.class);
 
         //(Old rating * number of old orders + review score) / (number of old orders + 1)
-        int newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+        double newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
 
         sql = "UPDATE courier SET rating = ? WHERE courier_id = ?";
         Object[] params2 = {newRating, sqlData.get(1)};

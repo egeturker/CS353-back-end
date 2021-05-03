@@ -1,7 +1,7 @@
 package cs353.proje.usecases.common.controller;
 
 import cs353.proje.usecases.common.dto.Response;
-import cs353.proje.usecases.common.repository.RaffleCouponService;
+import cs353.proje.usecases.common.service.RaffleCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +34,8 @@ public class RaffleCouponController {
     @GetMapping("/getRaffle/restaurant_id={id}")
     public Response getRaffle(@PathVariable(value="id") int restaurant_id)
     {
-        return null;
+
+        return raffleCouponService.getRaffle(restaurant_id);
     }
 
     //If there is an ongoing raffle for the given restaurant,
@@ -44,7 +45,7 @@ public class RaffleCouponController {
     public Response getEntryAmount(@PathVariable(value="restaurant_id") int restaurant_id,
                                     @PathVariable(value="customer_id") int customer_id)
     {
-        return null;
+        return raffleCouponService.getEntryAmount(restaurant_id, customer_id);
     }
 
 }
