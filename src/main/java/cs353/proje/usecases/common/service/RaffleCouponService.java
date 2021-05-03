@@ -26,7 +26,7 @@ public class RaffleCouponService {
     public Response checkCoupon(int restaurantId, String couponId){
         List<Coupon> coupons = raffleCouponRepository.checkCoupon(restaurantId, couponId);
         if(coupons.size() >= 1)
-            return new Response(true, "Success", coupons);
+            return new Response(true, "Success", coupons.get(0));
         else
             return new Response(false,"No coupons found", null);
     }
