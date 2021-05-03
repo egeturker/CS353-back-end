@@ -26,7 +26,7 @@ public class RaffleCouponController {
     public Response checkCoupon(@PathVariable(value="id") int restaurant_id,
                                 @RequestBody String couponID)
     {
-        return null;
+        return raffleCouponService.checkCoupon(restaurant_id, couponID);
     }
 
     //If there is an ongoing raffle for the given restaurant, return its information

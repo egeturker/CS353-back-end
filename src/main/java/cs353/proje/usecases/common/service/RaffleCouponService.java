@@ -23,6 +23,14 @@ public class RaffleCouponService {
             return new Response(false, "No coupons found", null);
     }
 
+    public Response checkCoupon(int restaurantId, String couponId){
+        List<Coupon> coupons = raffleCouponRepository.checkCoupon(restaurantId, couponId);
+        if(coupons.size() >= 1)
+            return new Response(true, "Success", coupons);
+        else
+            return new Response(false,"No coupons found", null);
+    }
+
     public Response getRaffle(int restaurantId){
         List<Raffle> raffles = raffleCouponRepository.getRaffle(restaurantId);
         if(raffles.size() >= 1)

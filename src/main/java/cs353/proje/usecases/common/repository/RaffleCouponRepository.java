@@ -52,6 +52,14 @@ public class RaffleCouponRepository {
         return jdbcTemplate.query(sql, params, couponRowMapper);
     }
 
+    public List<Coupon> checkCoupon(int restaurantId, String couponId){
+        String sql = "SELECT * FROM coupon INNER JOIN restaurant ON " +
+                "coupon.restaurant_id = restaurant.restaurant_id " +
+                "WHERE restaurant_id = ? AND coupon_id = ? AND used <> true";
+        Object[] params = {restaurantId, couponId};
+        return jdbcTemplate.query(sql, params, couponRowMapper);
+    }
+
     public List<Raffle> getRaffle(int restaurantId){
         String sql = "SELECT * FROM raffle WHERE restaurant_id = ?" +
                 "AND ending_date >= ? AND starting_date <= ?";
