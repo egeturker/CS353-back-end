@@ -52,8 +52,9 @@ public class RaffleCouponController {
     //Restaurant starts a new raffle, a restaurant must have only one raffle at a time,
     //so check for overlaps with the other raffles of this restaurant
     //The RequestBody Raffle includes all the information except the raffle_id
-    @PostMapping("/newRaffle")
-    public Response newRaffle(@RequestBody Raffle raffle)
+    @PostMapping("/newRaffle/restaurant_id={restaurant_id}")
+    public Response newRaffle(@PathVariable(value="restaurant_id") int restaurant_id,
+                              @RequestBody Raffle raffle)
     {
         return null;
     }
