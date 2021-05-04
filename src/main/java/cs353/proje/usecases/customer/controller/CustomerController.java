@@ -103,18 +103,19 @@ public class CustomerController {
         return customerService.createNewOrder(order);
     }
 
-    @PostMapping("/removeFavorite/customer_id={customer_id}")
+    @PostMapping("/removeFavorite/customer_id={customer_id}/restaurant_id={restaurant_id}")
     public Response removeFavorite(@PathVariable(value="customer_id") int customer_id,
-                                @RequestBody int restaurant_id)
+                                   @PathVariable(value="restaurant_id") int restaurant_id)
     {
         return customerService.removeFavorite(customer_id, restaurant_id);
     }
 
     //Kaan
-    @PostMapping("/addFavorite/customer_id={customer_id}")
+    @PostMapping("/addFavorite/customer_id={customer_id}/restaurant_id={restaurant_id}")
     public Response addFavorite(@PathVariable(value="customer_id") int customer_id,
-                                @RequestBody int restaurant_id)
+                                @PathVariable(value="restaurant_id") int restaurant_id)
     {
+        System.out.println(restaurant_id);
         return customerService.addFavorite(customer_id, restaurant_id);
     }
 
