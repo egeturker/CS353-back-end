@@ -95,7 +95,7 @@ public class CustomerService {
         if(oldOrders.size() >= 1)
             return new Response(true, "Success", oldOrders);
         else
-            return new Response(false, "No orders found", null);
+            return new Response(true, "No orders found", Collections.emptyList());
     }
 
     public Response getRestaurantInfo(int restaurant_id) {
@@ -127,7 +127,7 @@ public class CustomerService {
         if(ingredients.size() >= 1)
             return new Response(true, "Success", ingredients);
         else
-            return new Response(false, "No ingredients found", null);
+            return new Response(true, "No ingredients found", Collections.emptyList());
     }
 
     public Response createNewOrder(OrderFromCustomer order) {
