@@ -176,15 +176,21 @@ public class CustomerRepository {
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "WHERE (customer.customer_id = ?) " +
                 "AND (courier.status = 1) " +
-                "AND (restaurant.status = ?) " +
+                "AND (restaurant.status IN (?,?)) " +
                 "AND restaurant.rating BETWEEN ? AND ? " +
                 "AND restaurant.restaurant_id IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
                 "WHERE favorite.customer_id = ?) " +
                 ") GROUP BY restaurant_id ";
-        Object[] params = {customer_id, open, minRating, maxRating, customer_id};
-        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+
+        Object[] params = {customer_id, 1, 1, minRating, maxRating, customer_id};
+        Object[] params2 = {customer_id, 1, 0, minRating, maxRating, customer_id};
+        if (open)
+            return jdbcTemplate.query(sql, params, restaurantRowMapper);
+        else
+            return jdbcTemplate.query(sql, params2, restaurantRowMapper);
+
     }
 
     public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, boolean open,
@@ -205,15 +211,21 @@ public class CustomerRepository {
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
                 "WHERE (customer.customer_id = ?) " +
                 "AND (courier.status = 1) " +
-                "AND (restaurant.status = ?) " +
+                "AND (restaurant.status IN (?,?)) " +
                 "AND restaurant.rating BETWEEN ? AND ? " +
                 "AND restaurant.restaurant_id NOT IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
                 "WHERE favorite.customer_id = ?) " +
                 ") GROUP BY restaurant_id ";
-        Object[] params = {customer_id,  open, minRating, maxRating, customer_id};
-        return jdbcTemplate.query(sql, params, restaurantRowMapper);
+
+        Object[] params = {customer_id, 1, 1, minRating, maxRating, customer_id};
+        Object[] params2 = {customer_id, 1, 0, minRating, maxRating, customer_id};
+        if (open)
+            return jdbcTemplate.query(sql, params, restaurantRowMapper);
+        else
+            return jdbcTemplate.query(sql, params2, restaurantRowMapper);
+
     }
 
     public List<Restaurant> getFavoriteRestaurantsWithSearchKey(int customerId, String searchKey){
