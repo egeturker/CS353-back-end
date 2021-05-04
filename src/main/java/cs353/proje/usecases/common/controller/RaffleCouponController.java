@@ -1,5 +1,6 @@
 package cs353.proje.usecases.common.controller;
 
+import cs353.proje.usecases.common.dto.Raffle;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.common.service.RaffleCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,15 @@ public class RaffleCouponController {
                                     @PathVariable(value="customer_id") int customer_id)
     {
         return raffleCouponService.getEntryAmount(restaurant_id, customer_id);
+    }
+
+    //Restaurant starts a new raffle, a restaurant must have only one raffle at a time,
+    //so check for overlaps with the other raffles of this restaurant
+    //The RequestBody Raffle includes all the information except the raffle_id
+    @PostMapping("/newRaffle")
+    public Response newRaffle(@RequestBody Raffle raffle)
+    {
+        return null;
     }
 
 }
