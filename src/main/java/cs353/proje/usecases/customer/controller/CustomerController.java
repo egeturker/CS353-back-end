@@ -107,7 +107,7 @@ public class CustomerController {
     public Response removeFavorite(@PathVariable(value="customer_id") int customer_id,
                                 @RequestBody int restaurant_id)
     {
-        return null;
+        return customerService.removeFavorite(customer_id, restaurant_id);
     }
 
     //Kaan

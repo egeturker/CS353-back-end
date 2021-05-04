@@ -438,6 +438,12 @@ public class CustomerRepository {
         return jdbcTemplate.update(sql, params) == 1;
     }
 
+    public boolean removeFavorite(int customerId, int restaurantId){
+        String sql = "DELETE FROM favorite WHERE customer_id = ?  AND restaurant_id = ?";
+        Object[] params = {customerId, restaurantId};
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
     public List<Favorite> getFavorite(int customer_id) {
         String sql = "SELECT * FROM favorite " +
                      "WHERE customer_id = ? ";

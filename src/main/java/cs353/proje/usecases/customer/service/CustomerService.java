@@ -144,6 +144,13 @@ public class CustomerService {
             return new Response(false, "Order not placed", null);
     }
 
+    public Response removeFavorite(int customerId, int restaurantId){
+        if(customerRepository.removeFavorite(customerId, restaurantId))
+            return new Response(true,"Success", null);
+        else
+            return new Response(false, "Restaurant is not in favorites", null);
+    }
+
     public Response getFavorite(int customer_id) {
         List<Favorite> favorite = customerRepository.getFavorite(customer_id);
         if(favorite.size() >= 1)
