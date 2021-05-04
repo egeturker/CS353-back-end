@@ -7,6 +7,7 @@ import cs353.proje.usecases.common.repository.RaffleCouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,7 +21,7 @@ public class RaffleCouponService {
         if(coupons.size() >= 1)
             return new Response(true, "Success", coupons);
         else
-            return new Response(false, "No coupons found", null);
+            return new Response(false, "No coupons found", Collections.emptyList());
     }
 
     public Response checkCoupon(int restaurantId, String couponId){
@@ -34,23 +35,25 @@ public class RaffleCouponService {
     public Response getRaffle(int restaurantId){
         List<Raffle> raffles = raffleCouponRepository.getRaffle(restaurantId);
         if(raffles.size() >= 1)
-            return new Response(true, "Success", raffles);
+            return new Response(true, "Success", raffles.get(0));
         else
             return new Response(true,"No ongoing raffles found for the restaurant", null);
     }
 
-    public Response getEntryAmount(int customerId, int restaurantId){
+    public Response getEntryAmount(int restaurantId, int customerId){
         if(raffleCouponRepository.getRaffle(restaurantId).size() < 1)
             return new Response(true, "No ongoing raffles found for the restaurant", null);
         List<Integer> sqlData = raffleCouponRepository.getEntryAmount(customerId, restaurantId);
-        int entryAmount = sqlData.get(1);
-        boolean customerHasParticipated = (sqlData.get(0) > 0);
+        boolean customerHasParticipated = (sqlData.size() > 0);
         if(!customerHasParticipated)
-            return new Response(true, "Customer has not participated in any ongoing raffles", null);
-        if(entryAmount < 1)
-            return new Response(true, "Unsuccessful",null);//This base should not occur if customer has participated
-        else
-            return new Response(true, "Success", entryAmount);
+            return new Response(true, "Customer has not participated in any ongoing raffles", 0);
+        else{
+            int entryAmount = sqlData.get(0);
+            if(entryAmount < 1)
+                return new Response(true, "Unsuccessful",null);//This base should not occur if customer has participated
+            else
+                return new Response(true, "Success", entryAmount);
+        }
     }
 
 }

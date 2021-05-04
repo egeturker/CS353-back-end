@@ -62,14 +62,14 @@ public class RaffleCouponRepository {
 
     public List<Raffle> getRaffle(int restaurantId){
         String sql = "SELECT * FROM raffle WHERE restaurant_id = ?" +
-                "AND ending_date >= ? AND starting_date <= ?";
+                " AND ending_date >= ? AND starting_date <= ?";
         Object[] params = {restaurantId, Timestamp.from(Instant.now()),Timestamp.from(Instant.now())};
         return  jdbcTemplate.query(sql, params, raffleRowMapper);
 
     }
 
     public List<Integer> getEntryAmount(int customerId, int restaurantId){
-        String sql = "SELECT COUNT (*), num_entries FROM raffle " +
+        String sql = "SELECT num_entries FROM raffle " +
                 "INNER JOIN participates ON participates.raffle_id = raffle.raffle_id " +
                 "WHERE raffle.restaurant_id = ? AND participates.customer_id = ? " +
                 "AND ending_date >= ? AND starting_date <= ?";
