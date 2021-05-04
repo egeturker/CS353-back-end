@@ -37,13 +37,13 @@ public class CustomerService {
         List<Restaurant> favoriteRestaurantsWithFilter = customerRepository.getFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
         List<Restaurant> nonFavoriteRestaurantsWithFilter = customerRepository.getNonFavoriteRestaurantsWithFilter(customerId, open, minRating, maxRating);
 
-        if (favoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
-            if (nonFavoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
+        if (favoriteRestaurantsWithFilter.size() < 1)
+            if (nonFavoriteRestaurantsWithFilter.size() < 1)
                 return new Response(true, "No restaurants found matching the filter", Collections.emptyList());
             else
                 return new Response(true, "Success", nonFavoriteRestaurantsWithFilter);
 
-        if (nonFavoriteRestaurantsWithFilter.get(0).getRestaurantId() < 1)
+        if (nonFavoriteRestaurantsWithFilter.size() < 1)
             return new Response(true, "Success", favoriteRestaurantsWithFilter);
 
         List<Restaurant> restaurantsWithFilter =  Stream.concat(favoriteRestaurantsWithFilter.stream(),
@@ -58,13 +58,13 @@ public class CustomerService {
         List<Restaurant> favoriteRestaurantsWithSearch = customerRepository.getFavoriteRestaurantsWithSearchKey(customerId, searchKey);
         List<Restaurant> nonFavoriteRestaurantsWithSearch = customerRepository.getNonFavoriteRestaurantsWithSearchKey(customerId, searchKey);
 
-        if (favoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
-            if (nonFavoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
+        if (favoriteRestaurantsWithSearch.size() < 1)
+            if (nonFavoriteRestaurantsWithSearch.size() < 1)
                 return new Response(true, "No restaurants found matching the searchkey", Collections.emptyList());
             else
                 return new Response(true, "Success", nonFavoriteRestaurantsWithSearch);
 
-        if (nonFavoriteRestaurantsWithSearch.get(0).getRestaurantId() < 1)
+        if (nonFavoriteRestaurantsWithSearch.size() < 1)
             return new Response(true, "Success", favoriteRestaurantsWithSearch);
 
         List<Restaurant> restaurantsWithSearch =  Stream.concat(favoriteRestaurantsWithSearch.stream(),
