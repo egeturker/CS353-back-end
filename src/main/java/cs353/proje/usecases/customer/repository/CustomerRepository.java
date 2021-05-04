@@ -284,6 +284,7 @@ public class CustomerRepository {
                 ") GROUP BY restaurant_id ";
         Object[] params = {customerId, searchKey, searchKey, searchKey, customerId};
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
+
     }
 
     public Customer getCustomerData(int customerId){
