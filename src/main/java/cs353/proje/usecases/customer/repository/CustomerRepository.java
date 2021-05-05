@@ -94,7 +94,8 @@ public class CustomerRepository
         order.setDeliveryTime(rs.getTimestamp("delivery_time"));
         order.setStatus(rs.getString("status"));
         order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
-
+        //order.setRestaurantName(rs.getString("restaurant_name"));
+        //no such column in order
         return order;
     };
 
