@@ -18,5 +18,5 @@ public class OrderFromCustomer {
     private String paymentMethod;
     private String coupon;
 
-    List<SelectedMenuItemFromCustomer> selectedMenuItemFromCustomers;
+    List<SelectedMenuItemFromCustomer> selectedMenuItems;
 }

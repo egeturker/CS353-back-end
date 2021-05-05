@@ -457,7 +457,7 @@ public class CustomerRepository
         int order_id = jdbcTemplate.queryForObject(sql_order_id, integerRowMapper);
 
         if(result_order == 1 && order_id > 0) {
-            List<SelectedMenuItemFromCustomer> selected_menu_items = order.getSelectedMenuItemFromCustomers();
+            List<SelectedMenuItemFromCustomer> selected_menu_items = order.getSelectedMenuItems();
             int size = selected_menu_items.size();
             boolean result = true;
             for(int i = 0; i < size && result; i++){
