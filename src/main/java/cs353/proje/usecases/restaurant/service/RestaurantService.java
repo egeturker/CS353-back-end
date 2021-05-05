@@ -30,7 +30,7 @@ public class RestaurantService {
     public Response getRestaurantData(int restaurantId){
         List<AllRestaurantData> allRestaurantData = restaurantRepository.getRestaurantData(restaurantId);
         if(allRestaurantData.size() == 1)
-            return new Response(true, "Success", null);
+            return new Response(true, "Success", allRestaurantData.get(0));
         else
             return new Response(true, "Restaurant not found", Collections.emptyList());
     }
