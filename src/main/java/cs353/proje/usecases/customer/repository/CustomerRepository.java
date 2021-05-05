@@ -98,6 +98,7 @@ public class CustomerRepository
         order.setDeliveryTime(rs.getTimestamp("delivery_time"));
         order.setStatus(rs.getString("status"));
         order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
+        order.setPaymentMethod(rs.getString("payment_method"));
         order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurant_name());
         //no such column in order
         return order;
@@ -355,7 +356,7 @@ public class CustomerRepository
     public List<Order> getOldOrders( int customerId)
     {
         String sql = "SELECT order_id, restaurant.restaurant_id, customer_id, price, order_time, " +
-                "delivery_time , restaurant_name, order.status, optional_delivery_time FROM `order` " +
+                "delivery_time , payment_method, restaurant_name, order.status, optional_delivery_time FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = order.restaurant_id " +
                 "WHERE customer_id = ? " +
                 "ORDER BY order_time DESC;";
