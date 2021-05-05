@@ -4,6 +4,7 @@ import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
 import cs353.proje.usecases.restaurant.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,13 @@ public class RestaurantController {
 
     @Autowired
     RestaurantService restaurantService;
+
+    @GetMapping("/restaurantData/restaurant_id={id}")
+    public Response getRestaurantData(@PathVariable(value="id") int restaurant_id)
+    {
+        AllRestaurantData allRestaurantData; //Returns this with all fields filled.
+        return null;
+    }
 
     //Similar to updateCustomerData
     //Only the fields given in the UpdatedRestaurantData class will be updated
