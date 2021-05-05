@@ -16,8 +16,8 @@ public class RegionRepository {
 
     RowMapper<Region> regionRowMapper = (rs, rowNum) -> {
         Region region = new Region();
-        region.setRegion_id(rs.getInt("region_id"));
-        region.setRegion_name(rs.getString("region_name"));
+        region.setRegionId(rs.getInt("region_id"));
+        region.setRegionName(rs.getString("region_name"));
 
         return region;
     };
