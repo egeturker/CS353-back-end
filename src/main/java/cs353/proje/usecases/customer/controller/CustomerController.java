@@ -103,11 +103,10 @@ public class CustomerController {
         return customerService.createNewOrder(order);
     }
 
-    @PostMapping("/removeFavorite/customer_id={customer_id}/restaurant_id={restaurant_id}")
-    public Response removeFavorite(@PathVariable(value="customer_id") int customer_id,
-                                   @PathVariable(value="restaurant_id") int restaurant_id)
+    @GetMapping("/getOrderDetails/order_id={order_id}")
+    public Response getOrderDetails(@PathVariable(value="order_id") int order_id)
     {
-        return customerService.removeFavorite(customer_id, restaurant_id);
+        return customerService.getOrderDetails(order_id);
     }
 
     //Kaan
@@ -119,16 +118,17 @@ public class CustomerController {
         return customerService.addFavorite(customer_id, restaurant_id);
     }
 
+    @PostMapping("/removeFavorite/customer_id={customer_id}/restaurant_id={restaurant_id}")
+    public Response removeFavorite(@PathVariable(value="customer_id") int customer_id,
+                                   @PathVariable(value="restaurant_id") int restaurant_id)
+    {
+        return customerService.removeFavorite(customer_id, restaurant_id);
+    }
+
     @GetMapping("/getFavorite/customer_id={customer_id}")
     public Response getFavorite(@PathVariable(value="customer_id") int customer_id)
     {
         return customerService.getFavorite(customer_id);
-    }
-
-    @GetMapping("/getOrderDetails/order_id={order_id}")
-    public Response getOrderDetails(@PathVariable(value="order_id") int order_id)
-    {
-        return null;
     }
 
 }

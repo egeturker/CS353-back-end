@@ -2,10 +2,7 @@ package cs353.proje.usecases.customer.repository;
 
 import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.common.dto.MenuItem;
-import cs353.proje.usecases.customer.dto.Customer;
-import cs353.proje.usecases.customer.dto.OrderFromCustomer;
-import cs353.proje.usecases.customer.dto.Restaurant;
-import cs353.proje.usecases.customer.dto.SelectedMenuItemFromCustomer;
+import cs353.proje.usecases.customer.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class CustomerRepository {
+public class CustomerRepository
+{
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -38,17 +36,34 @@ public class CustomerRepository {
         return restaurant;
     };
 
-    RowMapper<MenuItem> menuRowMapper = (rs, rowNum) ->{
-        MenuItem menu = new MenuItem();
-        menu.setRestaurantId(rs.getInt("restaurant_id"));
-        menu.setMenuItemId(rs.getInt("menu_item_id"));
-        menu.setName(rs.getString("name"));
-        menu.setImageLink(rs.getString("image"));
-        menu.setDescription(rs.getString("description"));
-        menu.setBasePrice(rs.getDouble("base_price"));
-        menu.setFoodCategory(rs.getString("food_category"));
+    RowMapper<MenuItem> menuItemRowMapper = (rs, rowNum) ->{
+        MenuItem menu_item = new MenuItem();
+        menu_item.setRestaurantId(rs.getInt("restaurant_id"));
+        menu_item.setMenuItemId(rs.getInt("menu_item_id"));
+        menu_item.setName(rs.getString("name"));
+        menu_item.setImageLink(rs.getString("image"));
+        menu_item.setDescription(rs.getString("description"));
+        menu_item.setBasePrice(rs.getDouble("base_price"));
+        menu_item.setFoodCategory(rs.getString("food_category"));
 
-        return menu;
+        return menu_item;
+    };
+
+    RowMapper<SelectedMenuItem> selectedMenuItemRowMapper = (rs, rowNum) ->{
+        SelectedMenuItem selected_menu_item = new SelectedMenuItem();
+        MenuItem menu_item = new MenuItem();
+        menu_item.setRestaurantId(rs.getInt("restaurant_id"));
+        menu_item.setMenuItemId(rs.getInt("menu_item_id"));
+        menu_item.setName(rs.getString("name"));
+        menu_item.setImageLink(rs.getString("image"));
+        menu_item.setDescription(rs.getString("description"));
+        menu_item.setBasePrice(rs.getDouble("base_price"));
+        menu_item.setFoodCategory(rs.getString("food_category"));
+
+        selected_menu_item.setMenuItem(menu_item);
+        selected_menu_item.setQuantity(rs.getInt("quantity"));
+
+        return selected_menu_item;
     };
 
     RowMapper<Customer> customerRowMapper = (rs, rowNum) ->{
@@ -79,7 +94,6 @@ public class CustomerRepository {
         order.setDeliveryTime(rs.getTimestamp("delivery_time"));
         order.setStatus(rs.getString("status"));
         order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
-        order.setRestaurantName(rs.getString("restaurant_name"));
 
         return order;
     };
@@ -103,12 +117,14 @@ public class CustomerRepository {
         return favorite;
     };
 
-    public List<Restaurant> getAllRestaurants(){
+    public List<Restaurant> getAllRestaurants()
+    {
         String sql = "SELECT * FROM restaurant";
         return jdbcTemplate.query(sql, restaurantRowMapper);
     }
 
-    public List<Restaurant> getFavoriteRestaurants(int customerId){
+    public List<Restaurant> getFavoriteRestaurants(int customerId)
+    {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status " +
                 "FROM restaurant " +
@@ -133,7 +149,8 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 
-    public List<Restaurant> getNonFavoriteRestaurants(int customerId){
+    public List<Restaurant> getNonFavoriteRestaurants(int customerId)
+    {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status " +
                 "FROM restaurant " +
@@ -159,7 +176,8 @@ public class CustomerRepository {
     }
 
     public List<Restaurant> getFavoriteRestaurantsWithFilter(int customer_id, boolean open,
-                                                             double minRating, double maxRating) {
+                                                             double minRating, double maxRating)
+    {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status " +
                 "FROM restaurant " +
@@ -194,7 +212,8 @@ public class CustomerRepository {
     }
 
     public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, boolean open,
-                                                             double minRating, double maxRating) {
+                                                             double minRating, double maxRating)
+    {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status " +
                 " FROM restaurant " +
@@ -228,7 +247,8 @@ public class CustomerRepository {
 
     }
 
-    public List<Restaurant> getFavoriteRestaurantsWithSearchKey(int customerId, String searchKey){
+    public List<Restaurant> getFavoriteRestaurantsWithSearchKey(int customerId, String searchKey)
+    {
         searchKey = "%" + searchKey + "%";
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
                 " description, restaurant_category, restaurant.status " +
@@ -257,7 +277,8 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, params, restaurantRowMapper);
     }
 
-    public List<Restaurant> getNonFavoriteRestaurantsWithSearchKey(int customerId, String searchKey){
+    public List<Restaurant> getNonFavoriteRestaurantsWithSearchKey(int customerId, String searchKey)
+    {
         searchKey = "%" + searchKey + "%";
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
                 " description, restaurant_category, restaurant.status " +
@@ -287,7 +308,8 @@ public class CustomerRepository {
 
     }
 
-    public Customer getCustomerData(int customerId){
+    public Customer getCustomerData(int customerId)
+    {
         String sql = "SELECT * FROM customer " +
                 "INNER JOIN user ON user_id = customer_id " +
                 "WHERE customer_id = ?";
@@ -300,7 +322,8 @@ public class CustomerRepository {
             return null;
     }
 
-    public boolean updateCustomerData(int userId, Customer customerData){
+    public boolean updateCustomerData(int userId, Customer customerData)
+    {
         String sql = "UPDATE customer " +
                 "INNER JOIN user ON user.user_id = customer.customer_id " +
                 "SET email = ?, " +
@@ -324,7 +347,8 @@ public class CustomerRepository {
         return jdbcTemplate.update(sql,params) == 2;
     }
 
-    public List<Order> getOldOrders( int customerId){
+    public List<Order> getOldOrders( int customerId)
+    {
         String sql = "SELECT order_id, restaurant.restaurant_id, customer_id, price, order_time, " +
                 "delivery_time , restaurant_name, order.status, optional_delivery_time FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = order.restaurant_id " +
@@ -335,7 +359,8 @@ public class CustomerRepository {
         return jdbcTemplate.query(sql, params, orderRowMapper);
     }
 
-    public Restaurant getRestaurantInfo(int restaurant_id) {
+    public Restaurant getRestaurantInfo(int restaurant_id)
+    {
         String sql = "SELECT * " +
                      "FROM restaurant " +
                      "WHERE restaurant_id = ? ";
@@ -348,27 +373,30 @@ public class CustomerRepository {
             return null;
     }
 
-    public List<MenuItem> getRestaurantMenu(int restaurant_id) {
+    public List<MenuItem> getRestaurantMenu(int restaurant_id)
+    {
         String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
                      "WHERE menu_item.restaurant_id = ? " +
                      "ORDER BY food_category";
         Object[] params = {restaurant_id};
-        return jdbcTemplate.query(sql, params, menuRowMapper);
+        return jdbcTemplate.query(sql, params, menuItemRowMapper);
     }
 
-    public List<MenuItem> getRestaurantMenu(int restaurant_id, String food_category) {
+    public List<MenuItem> getRestaurantMenu(int restaurant_id, String food_category)
+    {
         String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
                      "WHERE menu_item.restaurant_id = ? AND menu_item.food_category = ? ";
         Object[] params = {restaurant_id, food_category};
-        return jdbcTemplate.query(sql, params, menuRowMapper);
+        return jdbcTemplate.query(sql, params, menuItemRowMapper);
     }
 
-    public List<CategoryMenu> getRestaurantMenuByCategory(int restaurant_id){
+    public List<CategoryMenu> getRestaurantMenuByCategory(int restaurant_id)
+    {
         String sql_category = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
                               "WHERE menu_item.restaurant_id = ? " +
                               "GROUP BY food_category";
         Object[] params = {restaurant_id};
-        List<MenuItem> menu = jdbcTemplate.query(sql_category, params, menuRowMapper);
+        List<MenuItem> menu = jdbcTemplate.query(sql_category, params, menuItemRowMapper);
 
         List<CategoryMenu> category_menu = new ArrayList<>();
         CategoryMenu category_item = new CategoryMenu();
@@ -386,7 +414,8 @@ public class CustomerRepository {
         return category_menu;
     }
 
-    public List<Ingredient> getIngredients(int menu_item_id) {
+    public List<Ingredient> getIngredients(int menu_item_id)
+    {
         String sql = "SELECT * FROM ingredient " +
                      "WHERE menu_item_id = ?";
         Object[] params = {menu_item_id};
@@ -394,7 +423,8 @@ public class CustomerRepository {
     }
 
 
-    public boolean createNewOrder(OrderFromCustomer order) {
+    public boolean createNewOrder(OrderFromCustomer order)
+    {
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
@@ -421,7 +451,8 @@ public class CustomerRepository {
         }
     }
 
-    private boolean addSelectedMenuItems(SelectedMenuItemFromCustomer selected_menu_items, int order_id) {
+    private boolean addSelectedMenuItems(SelectedMenuItemFromCustomer selected_menu_items, int order_id)
+    {
         String sql_menu_item = "INSERT INTO selected_menu_item (order_id, menu_item_id, quantity) " +
                 "VALUES (?, ?, ?) ";
         Object[] params = {order_id, selected_menu_items.getMenuItemId(), selected_menu_items.getQuantity()};
@@ -437,27 +468,71 @@ public class CustomerRepository {
         return result;
     }
 
-    private boolean addSelectedIngredients(int order_id, int menu_item_id, Integer ingredient_id) {
+    private boolean addSelectedIngredients(int order_id, int menu_item_id, Integer ingredient_id)
+    {
         String sql_ingredient = "INSERT INTO selected_ingredient (order_id, menu_item_id, ingredient_id) " +
                 "VALUES (?, ?, ?) ";
         Object[] params = {order_id, menu_item_id, ingredient_id};
         return jdbcTemplate.update(sql_ingredient, params) == 1;
     }
 
-    public boolean addFavorite(int customer_id, int restaurant_id) {
+    public OrderDetails getOrderDetails(int order_id)
+    {
+        String sql = "SELECT * FROM `order` " +
+                     "WHERE order_id = ? ";
+        Object[] params = {order_id};
+        List<Order> order = jdbcTemplate.query(sql, params, orderRowMapper);
+
+        OrderDetails detail = new OrderDetails();
+        detail.setOrder(order.get(0));
+        detail.setSelectedMenuItems(getSelectedMenuItems(order_id));
+        return detail;
+    }
+
+    private List<SelectedMenuItem> getSelectedMenuItems(int order_id)
+    {
+        String sql = "SELECT * FROM selected_menu_item INNER JOIN menu_item " +
+                     "ON selected_menu_item.menu_item_id = menu_item.menu_item_id  " +
+                     "WHERE selected_menu_item.order_id = ? ";
+        Object[] params = {order_id};
+        List<SelectedMenuItem> selected_menu_items = jdbcTemplate.query(sql, params, selectedMenuItemRowMapper);
+
+        int size = selected_menu_items.size();
+        for (SelectedMenuItem selected_menu_item : selected_menu_items) {
+            int menu_item_id = selected_menu_item.getMenuItem().getMenuItemId();
+            selected_menu_item.setSelectedIngredients(getSelectedIngredients(order_id, menu_item_id));
+        }
+        return selected_menu_items;
+    }
+
+    private List<Ingredient> getSelectedIngredients(int order_id, int menu_item_id)
+    {
+        String sql = "SELECT * FROM selected_ingredient INNER JOIN ingredient " +
+                     "ON selected_ingredient.ingredient_id = ingredient.ingredient_id  " +
+                     "WHERE selected_ingredient.order_id = ? AND selected_ingredient.menu_item_id = ?";
+        Object[] params = {order_id, menu_item_id};
+        List<Ingredient> selected_menu_items = jdbcTemplate.query(sql, params, ingredientRowMapper);
+        return selected_menu_items;
+    }
+
+    public boolean addFavorite(int customer_id, int restaurant_id)
+    {
         String sql = "INSERT INTO favorite " +
-                                "VALUES (?, ?) ";
+                     "VALUES (?, ?) ";
         Object[] params = {customer_id, restaurant_id};
         return jdbcTemplate.update(sql, params) == 1;
     }
 
-    public boolean removeFavorite(int customerId, int restaurantId){
-        String sql = "DELETE FROM favorite WHERE customer_id = ?  AND restaurant_id = ?";
-        Object[] params = {customerId, restaurantId};
+    public boolean removeFavorite(int customer_id, int restaurant_id)
+    {
+        String sql = "DELETE FROM favorite " +
+                     "WHERE customer_id = ? AND restaurant_id = ? ";
+        Object[] params = {customer_id, restaurant_id};
         return jdbcTemplate.update(sql, params) == 1;
     }
 
-    public List<Favorite> getFavorite(int customer_id) {
+    public List<Favorite> getFavorite(int customer_id)
+    {
         String sql = "SELECT * FROM favorite " +
                      "WHERE customer_id = ? ";
         Object[] params = {customer_id};
