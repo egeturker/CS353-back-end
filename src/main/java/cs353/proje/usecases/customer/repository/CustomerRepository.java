@@ -445,10 +445,10 @@ public class CustomerRepository
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, " +
-                "optional_delivery_time, payment_method) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?) ";
+                "optional_delivery_time, payment_method, coupon) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
         Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), timestamp,
-                "Order Taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
+                "Order Taken", order.getOptionalDeliveryTime(), order.getPaymentMethod(), order.getCoupon()};
         int result_order = jdbcTemplate.update(sql_order, params_order);
 
         String sql_order_id = "SELECT LAST_INSERT_ID()";
@@ -521,7 +521,6 @@ public class CustomerRepository
         Object[] params = {order_id};
         List<SelectedMenuItem> selected_menu_items = jdbcTemplate.query(sql, params, selectedMenuItemRowMapper);
 
-        int size = selected_menu_items.size();
         for (SelectedMenuItem selected_menu_item : selected_menu_items) {
             int menu_item_id = selected_menu_item.getMenuItem().getMenuItemId();
             selected_menu_item.setSelectedIngredients(getSelectedIngredients(order_id, menu_item_id));
