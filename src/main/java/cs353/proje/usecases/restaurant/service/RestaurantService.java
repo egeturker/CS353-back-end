@@ -16,7 +16,8 @@ public class RestaurantService {
     RestaurantRepository restaurantRepository;
 
     public Response updateRestaurantData(int restaurantId, UpdatedRestaurantData updatedRestaurantData){
-        if (restaurantRepository.updateRestaurantData(restaurantId, updatedRestaurantData))
+        if (restaurantRepository.updateRestaurantData(restaurantId, updatedRestaurantData)
+        && restaurantRepository.updateRestaurantOwnerData(updatedRestaurantData))
             return new Response(true, "Restaurant data updated successfully", null);
         else
             return new Response(false, "Unsuccessful", null);
