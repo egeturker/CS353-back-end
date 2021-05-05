@@ -443,6 +443,7 @@ public class CustomerRepository
                 return false;
             }
         }
+
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, " +
