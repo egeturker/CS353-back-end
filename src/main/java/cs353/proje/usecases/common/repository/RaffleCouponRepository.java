@@ -4,6 +4,7 @@ import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.Raffle;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,9 @@ public class RaffleCouponRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
     @Autowired
+    @Lazy
     CustomerRepository customerRepository;
 
     RowMapper<Coupon> couponRowMapper = (rs, rowNum) ->{

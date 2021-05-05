@@ -1,9 +1,10 @@
 package cs353.proje.usecases.customer.repository;
 
 import cs353.proje.usecases.common.dto.*;
-import cs353.proje.usecases.common.dto.MenuItem;
+import cs353.proje.usecases.common.repository.RaffleCouponRepository;
 import cs353.proje.usecases.customer.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -16,9 +17,12 @@ import java.util.List;
 @Repository
 public class CustomerRepository
 {
-
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Lazy
+    RaffleCouponRepository raffleCouponRepository;
 
     RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
 
@@ -426,6 +430,18 @@ public class CustomerRepository
 
     public boolean createNewOrder(OrderFromCustomer order)
     {
+        //Checks if the coupon is valid
+        if(order.getCoupon() != null) {
+            List<Coupon> coupons = raffleCouponRepository.checkCoupon(order.getRestaurantId(), order.getCoupon());
+            if(coupons.size() > 0 ) {
+                String sql_coupon= "UPDATE coupon SET used = ? WHERE coupon_id = ? ";
+                Object[] params_coupon = {1, coupons.get(0).getCouponId()};
+                jdbcTemplate.update(sql_coupon, params_coupon);
+            }
+            else {
+                return false;
+            }
+        }
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
@@ -484,10 +500,16 @@ public class CustomerRepository
         Object[] params = {order_id};
         List<Order> order = jdbcTemplate.query(sql, params, orderRowMapper);
 
-        OrderDetails detail = new OrderDetails();
-        detail.setOrder(order.get(0));
-        detail.setSelectedMenuItems(getSelectedMenuItems(order_id));
-        return detail;
+        if(order.size() > 0) {
+            OrderDetails detail = new OrderDetails();
+            detail.setOrder(order.get(0));
+            detail.setSelectedMenuItems(getSelectedMenuItems(order_id));
+            return detail;
+        }
+        else {
+            return null;
+        }
+
     }
 
     private List<SelectedMenuItem> getSelectedMenuItems(int order_id)
