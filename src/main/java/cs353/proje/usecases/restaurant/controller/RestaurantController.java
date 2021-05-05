@@ -5,6 +5,8 @@ import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
+import cs353.proje.usecases.restaurant.service.RestaurantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,13 +16,16 @@ import java.util.List;
 @CrossOrigin
 public class RestaurantController {
 
+    @Autowired
+    RestaurantService restaurantService;
+
     //Similar to updateCustomerData
     //Only the fields given in the UpdatedRestaurantData class will be updated
     @PostMapping("/restaurantData/restaurant_id={id}")
     public Response updateRestaurantData(@PathVariable(value="id") int restaurant_id,
                                          @RequestBody UpdatedRestaurantData updatedRestaurantData)
     {
-        return null;
+        return restaurantService.updateRestaurantData(restaurant_id, updatedRestaurantData);
     }
 
     //Returns the orders taken from this restaurant starting from the newest.

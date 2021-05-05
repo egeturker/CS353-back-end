@@ -16,7 +16,10 @@ public class RestaurantService {
     RestaurantRepository restaurantRepository;
 
     public Response updateRestaurantData(int restaurantId, UpdatedRestaurantData updatedRestaurantData){
-        return null;
+        if (restaurantRepository.updateRestaurantData(restaurantId, updatedRestaurantData))
+            return new Response(true, "Restaurant data updated successfully", null);
+        else
+            return new Response(false, "Unsuccessful", null);
     }
 
     public Response getOldOrders(int restaurantId){

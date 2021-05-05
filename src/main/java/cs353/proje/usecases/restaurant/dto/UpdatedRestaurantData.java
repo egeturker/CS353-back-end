@@ -12,9 +12,9 @@ import lombok.Setter;
 public class UpdatedRestaurantData {
 
     private User restaurantOwnerData;
-    private String restaurant_name;
+    private String restaurantName;
     private String address;
     private String description;
-    private String restaurant_category;
+    private String restaurantCategory;
 
 }
