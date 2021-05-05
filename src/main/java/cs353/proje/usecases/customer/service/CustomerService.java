@@ -145,10 +145,13 @@ public class CustomerService
 
     public Response createNewOrder(OrderFromCustomer order)
     {
-        if(customerRepository.createNewOrder(order))
+        if(customerRepository.createNewOrder(order)) {
+            customerRepository.updateRaffleParticipation(order);
             return new Response(true, "Success", null);
-        else
+        }
+        else {
             return new Response(false, "Order not placed", null);
+        }
     }
 
     public Response getOrderDetails(int order_id)

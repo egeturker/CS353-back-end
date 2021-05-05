@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class OrderDetails {
-
     private Order order;
     private List<SelectedMenuItem> selectedMenuItems;
 }

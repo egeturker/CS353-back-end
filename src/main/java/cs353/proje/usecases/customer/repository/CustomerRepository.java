@@ -444,7 +444,8 @@ public class CustomerRepository
         }
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
-        String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, optional_delivery_time, payment_method) " +
+        String sql_order = "INSERT INTO `order`(restaurant_id, customer_id, price, order_time, status, " +
+                "optional_delivery_time, payment_method) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) ";
         Object[] params_order = {order.getRestaurantId(), order.getCustomerId(), order.getPrice(), timestamp,
                 "Order Taken", order.getOptionalDeliveryTime(), order.getPaymentMethod()};
@@ -534,8 +535,7 @@ public class CustomerRepository
                      "ON selected_ingredient.ingredient_id = ingredient.ingredient_id  " +
                      "WHERE selected_ingredient.order_id = ? AND selected_ingredient.menu_item_id = ?";
         Object[] params = {order_id, menu_item_id};
-        List<Ingredient> selected_menu_items = jdbcTemplate.query(sql, params, ingredientRowMapper);
-        return selected_menu_items;
+        return jdbcTemplate.query(sql, params, ingredientRowMapper);
     }
 
     public boolean addFavorite(int customer_id, int restaurant_id)
@@ -560,5 +560,25 @@ public class CustomerRepository
                      "WHERE customer_id = ? ";
         Object[] params = {customer_id};
         return jdbcTemplate.query(sql, params, favoriteRowMapper);
+    }
+
+    public void updateRaffleParticipation(OrderFromCustomer order) {
+        List<Raffle> raffles = raffleCouponRepository.getRaffle(order.getRestaurantId());
+        if(raffles.size() > 0) {
+            List<Integer> num_entries = raffleCouponRepository.getEntryAmount(order.getCustomerId(), order.getRestaurantId());
+            if(num_entries.size() == 0) {
+                String sql = "INSERT INTO participates (customer_id, raffle_id, num_entries) " +
+                             "VALUES (?, ?, ?) ";
+                Object[] params = {order.getCustomerId(), raffles.get(0).getRaffleId(), 1};
+                jdbcTemplate.update(sql, params);
+            }
+            else {
+                int new_value = num_entries.get(0) + 1;
+                String sql = "UPDATE participates SET num_entries = ? " +
+                        "WHERE customer_id = ? AND raffle_id = ? ";
+                Object[] params = {new_value, order.getCustomerId(), raffles.get(0).getRaffleId()};
+                jdbcTemplate.update(sql, params);
+            }
+        }
     }
 }
