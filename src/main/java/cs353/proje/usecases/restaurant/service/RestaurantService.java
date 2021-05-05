@@ -2,12 +2,16 @@ package cs353.proje.usecases.restaurant.service;
 
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
 import cs353.proje.usecases.restaurant.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 
 @Service
 public class RestaurantService {
@@ -21,6 +25,14 @@ public class RestaurantService {
             return new Response(true, "Restaurant data updated successfully", null);
         else
             return new Response(false, "Unsuccessful", null);
+    }
+
+    public Response getRestaurantData(int restaurantId){
+        List<AllRestaurantData> allRestaurantData = restaurantRepository.getRestaurantData(restaurantId);
+        if(allRestaurantData.size() == 1)
+            return new Response(true, "Success", null);
+        else
+            return new Response(true, "Restaurant not found", Collections.emptyList());
     }
 
     public Response getOldOrders(int restaurantId){

@@ -23,8 +23,7 @@ public class RestaurantController {
     @GetMapping("/restaurantData/restaurant_id={id}")
     public Response getRestaurantData(@PathVariable(value="id") int restaurant_id)
     {
-        AllRestaurantData allRestaurantData; //Returns this with all fields filled.
-        return null;
+        return restaurantService.getRestaurantData(restaurant_id);
     }
 
     //Similar to updateCustomerData

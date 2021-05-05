@@ -10,6 +10,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Region {
-    private int region_id;
-    private String region_name;
+    private int regionId;
+    private String regionName;
 }
