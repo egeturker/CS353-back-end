@@ -38,12 +38,13 @@ public class RestaurantRepository {
                 "username = ?, " +
                 "password = ?, " +
                 "telephone = ?, " +
-                "image = ?";
+                "image = ? " +
+                "WHERE user_id = ?";
 
         User owner = updatedRestaurantData.getRestaurantOwnerData();
 
         Object[] params = {owner.getName(), owner.getSurname(), owner.getEmail(), owner.getUsername(), owner.getPassword(),
-                owner.getTelephone(), owner.getImage()};
+                owner.getTelephone(), owner.getImage(), owner.getUserId()};
 
         return jdbcTemplate.update(sql, params) == 1;
     }
