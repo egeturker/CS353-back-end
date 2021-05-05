@@ -80,4 +80,12 @@ public class RaffleCouponRepository {
 
         return jdbcTemplate.queryForList(sql, params, Integer.class);
     }
+    public boolean newRaffle(int restaurantId, Raffle raffle){
+        String sql = "INSERT INTO raffle(coupon_prize, ending_date, min_entry_price," +
+                " restaurant_id, starting_date, winner) VALUES (?,?,?,?,?,?)";
+        Object[] params = {raffle.getCouponPrize(), raffle.getEndingDate(), raffle.getMinEntryPrice(),
+            restaurantId, raffle.getStartingDate(), null};
+
+        return (jdbcTemplate.update(sql, params) > 0);
+    }
 }

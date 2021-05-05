@@ -50,9 +50,21 @@ public class RaffleCouponService {
         else{
             int entryAmount = sqlData.get(0);
             if(entryAmount < 1)
-                return new Response(true, "Unsuccessful",null);//This base should not occur if customer has participated
+                return new Response(true, "Unsuccessful",null);//This case should not occur if customer has participated
             else
                 return new Response(true, "Success", entryAmount);
+        }
+    }
+
+    public Response newRaffle(int restaurantId, Raffle raffle){
+        List<Raffle> raffles = raffleCouponRepository.getRaffle(restaurantId);
+        if(raffles.size() >= 1)
+            return new Response(false, "An ongoing raffle already exists for the restaurant", raffles.get(0));
+        else{
+            if(raffleCouponRepository.newRaffle(restaurantId, raffle))
+                return new Response(true, "New raffle started successfully", null );
+            else
+                return new Response(false,"Unsuccessful",null);
         }
     }
 

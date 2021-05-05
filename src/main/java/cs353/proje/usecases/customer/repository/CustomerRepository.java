@@ -98,7 +98,8 @@ public class CustomerRepository
         order.setDeliveryTime(rs.getTimestamp("delivery_time"));
         order.setStatus(rs.getString("status"));
         order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
-        //order.setRestaurantName(rs.getString("restaurant_name"));
+        order.setPaymentMethod(rs.getString("payment_method"));
+        order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurant_name());
         //no such column in order
         return order;
     };
@@ -355,7 +356,7 @@ public class CustomerRepository
     public List<Order> getOldOrders( int customerId)
     {
         String sql = "SELECT order_id, restaurant.restaurant_id, customer_id, price, order_time, " +
-                "delivery_time , restaurant_name, order.status, optional_delivery_time FROM `order` " +
+                "delivery_time , payment_method, restaurant_name, order.status, optional_delivery_time FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = order.restaurant_id " +
                 "WHERE customer_id = ? " +
                 "ORDER BY order_time DESC;";
@@ -456,7 +457,7 @@ public class CustomerRepository
         int order_id = jdbcTemplate.queryForObject(sql_order_id, integerRowMapper);
 
         if(result_order == 1 && order_id > 0) {
-            List<SelectedMenuItemFromCustomer> selected_menu_items = order.getSelectedMenuItemFromCustomers();
+            List<SelectedMenuItemFromCustomer> selected_menu_items = order.getSelectedMenuItems();
             int size = selected_menu_items.size();
             boolean result = true;
             for(int i = 0; i < size && result; i++){
