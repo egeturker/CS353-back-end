@@ -67,4 +67,12 @@ public class RestaurantService {
     public Response removeMenuItem(int restaurantId, int menuItemId){
         return null;
     }
+
+    public Response getRestaurantId(int ownerId) {
+        int restaurantId = restaurantRepository.getRestaurantId(ownerId);
+        if(restaurantId > 0)
+            return new Response(true, "Success", restaurantId);
+        else
+            return new Response(false, "Unsuccessful", null);
+    }
 }

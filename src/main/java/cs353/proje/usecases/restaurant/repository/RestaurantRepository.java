@@ -1,6 +1,7 @@
 package cs353.proje.usecases.restaurant.repository;
 
 import cs353.proje.usecases.common.dto.Region;
+import cs353.proje.usecases.customer.dto.Restaurant;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Repository
 public class RestaurantRepository {
+
+    RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
 
     RowMapper<AllRestaurantData> allRestaurantDataRowMapper = (rs, rowNum) -> {
         AllRestaurantData allRestaurantData = new AllRestaurantData();
@@ -127,5 +130,17 @@ public class RestaurantRepository {
         Object[] params = {restaurantId, regionId};
 
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public int getRestaurantId(int ownerId) {
+        String sql = "SELECT restaurant_id FROM restaurant " +
+                "WHERE owner_id = ?";
+
+        Object[] params = {ownerId};
+        List<Integer> restaurant_ids = jdbcTemplate.query(sql, params, integerRowMapper);
+        if (restaurant_ids.size() > 0)
+            return restaurant_ids.get(0);
+        else
+            return -1;
     }
 }

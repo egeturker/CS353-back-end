@@ -47,7 +47,7 @@ public class RestaurantController {
     @GetMapping("/getRestaurantId/owner_id={id}")
     public Response getRestaurantId(@PathVariable(value="id") int owner_id)
     {
-        return null;
+        return restaurantService.getRestaurantId(owner_id);
     }
 
     //Restaurant states it is open now, set its status to 1
