@@ -36,6 +36,7 @@ public class CustomerRepository
         restaurant.setDescription(rs.getString("description"));
         restaurant.setRestaurant_category(rs.getString("restaurant_category"));
         restaurant.setStatus(rs.getString("status"));
+        restaurant.setImage(rs.getString("image"));
 
         return restaurant;
     };
@@ -133,7 +134,7 @@ public class CustomerRepository
     public List<Restaurant> getFavoriteRestaurants(int customerId)
     {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 "FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +
@@ -159,7 +160,7 @@ public class CustomerRepository
     public List<Restaurant> getNonFavoriteRestaurants(int customerId)
     {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 "FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +
@@ -186,7 +187,7 @@ public class CustomerRepository
                                                              double minRating, double maxRating)
     {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 "FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +
@@ -222,7 +223,7 @@ public class CustomerRepository
                                                              double minRating, double maxRating)
     {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 " FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +
@@ -258,7 +259,7 @@ public class CustomerRepository
     {
         searchKey = "%" + searchKey + "%";
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 "FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +
@@ -288,7 +289,7 @@ public class CustomerRepository
     {
         searchKey = "%" + searchKey + "%";
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, \n" +
-                " description, restaurant_category, restaurant.status " +
+                " description, restaurant_category, restaurant.status, image " +
                 "FROM restaurant " +
                 "INNER JOIN serves_at ON serves_at.restaurant_id = restaurant.restaurant_id " +
                 "INNER JOIN region ON region.region_id = serves_at.region_id " +

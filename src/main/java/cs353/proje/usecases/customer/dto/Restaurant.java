@@ -14,6 +14,7 @@ public class Restaurant {
     private double rating;
     private String address;
     private String description;
+    private String image;
     private String restaurant_category;
     private String status;
 }

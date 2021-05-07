@@ -37,6 +37,7 @@ public class RestaurantRepository {
         allRestaurantData.setRating(rs.getDouble("rating"));
         allRestaurantData.setStatus(rs.getBoolean("status"));
         allRestaurantData.setServedRegions(getServedRegions(allRestaurantData.getRestaurantId()));
+        allRestaurantData.setImage(rs.getString("image"));
 
         return allRestaurantData;
     };
@@ -59,12 +60,13 @@ public class RestaurantRepository {
                 "restaurant_name = ?, " +
                 "address = ?, " +
                 "description = ?, " +
-                "restaurant_category = ? " +
+                "restaurant_category = ?, " +
+                "image = ? " +
                 "WHERE restaurant_id = ?";
 
         Object[] params = {updatedRestaurantData.getRestaurantOwnerData().getUserId(), updatedRestaurantData.getRestaurantName(),
             updatedRestaurantData.getAddress(), updatedRestaurantData.getDescription(), updatedRestaurantData.getRestaurantCategory(),
-            restaurantId};
+            updatedRestaurantData.getImage(), restaurantId};
 
         return jdbcTemplate.update(sql, params) == 1;
     }

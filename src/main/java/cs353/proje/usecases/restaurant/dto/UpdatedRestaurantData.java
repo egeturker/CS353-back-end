@@ -16,5 +16,6 @@ public class UpdatedRestaurantData {
     private String address;
     private String description;
     private String restaurantCategory;
+    private String image;
 
 }

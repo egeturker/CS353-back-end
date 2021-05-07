@@ -22,6 +22,7 @@ public class AllRestaurantData {
     private String restaurantCategory;
     private double rating;
     private boolean status;
+    private String image;
 
     private List<Region> servedRegions;
 
