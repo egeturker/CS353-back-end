@@ -44,6 +44,12 @@ public class RestaurantController {
         return null;
     }
 
+    @GetMapping("/getRestaurantId/owner_id={id}")
+    public Response getRestaurantId(@PathVariable(value="id") int owner_id)
+    {
+        return null;
+    }
+
     //Restaurant states it is open now, set its status to 1
     @PostMapping("/open/restaurant_id={id}")
     public Response open(@PathVariable(value="id") int restaurant_id)
