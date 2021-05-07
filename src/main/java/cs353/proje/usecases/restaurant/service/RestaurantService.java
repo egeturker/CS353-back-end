@@ -8,7 +8,6 @@ import cs353.proje.usecases.restaurant.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,11 +47,17 @@ public class RestaurantService {
     }
 
     public Response addServedRegion(int restaurantId, int regionId){
-        return null;
+        if(restaurantRepository.addServedRegion(restaurantId, regionId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Unsuccessful", null);
     }
 
     public Response removeServedRegion(int restaurantId, int regionId){
-        return null;
+        if(restaurantRepository.removeServedRegion(restaurantId, regionId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Unsuccessful", null);
     }
 
     public Response addMenuItem(int restaurantId, MenuItem menuItem){

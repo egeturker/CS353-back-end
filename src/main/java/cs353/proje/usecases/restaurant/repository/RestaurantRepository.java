@@ -112,4 +112,20 @@ public class RestaurantRepository {
 
         return jdbcTemplate.query(sql, params, allRestaurantDataRowMapper);
     }
+
+    public boolean addServedRegion(int restaurantId, int regionId){
+
+        String sql = "INSERT INTO serves_at(restaurant_id, region_id) VALUES (?,?)";
+        Object[] params = {restaurantId, regionId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean removeServedRegion(int restaurantId, int regionId){
+
+        String sql = "DELETE FROM serves_at WHERE restaurant_id = ? AND region_id = ? ";
+        Object[] params = {restaurantId, regionId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
 }

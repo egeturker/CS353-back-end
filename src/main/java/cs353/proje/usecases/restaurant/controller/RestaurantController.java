@@ -69,7 +69,7 @@ public class RestaurantController {
     public Response addServedRegion(@PathVariable(value="restaurant_id") int restaurant_id,
                           @PathVariable(value="region_id") int region_id)
     {
-        return null;
+        return restaurantService.addServedRegion(restaurant_id, region_id);
     }
 
     //Restaurant removes a region that it serves food to
@@ -77,7 +77,7 @@ public class RestaurantController {
     public Response removeServedRegion(@PathVariable(value="restaurant_id") int restaurant_id,
                                     @PathVariable(value="region_id") int region_id)
     {
-        return null;
+        return restaurantService.removeServedRegion(restaurant_id, region_id);
     }
 
     //Restaurant adds a new MenuItem to its menu. Its will have no ingredients initially.
