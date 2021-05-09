@@ -78,13 +78,13 @@ public class RestaurantController {
         return restaurantService.removeServedRegion(restaurant_id, region_id);
     }
 
-    //Restaurant adds a new MenuItem to its menu. Its will have no ingredients initially.
+    //Restaurant adds a new MenuItem to its menu. It will have no ingredients initially.
     //The RequestBody MenuItem includes all the information except the menu_item_id
     @PostMapping("/addMenuItem/restaurant_id={restaurant_id}")
     public Response addMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
                                 @RequestBody MenuItem menuItem)
     {
-        return null;
+        return restaurantService.addMenuItem(restaurant_id, menuItem);
     }
 
 

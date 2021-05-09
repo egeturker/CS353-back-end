@@ -1,5 +1,6 @@
 package cs353.proje.usecases.restaurant.repository;
 
+import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Region;
 import cs353.proje.usecases.customer.dto.Restaurant;
@@ -178,6 +179,15 @@ public class RestaurantRepository {
         String sql = "UPDATE restaurant SET status = ? " +
                      "WHERE restaurant_id = ?";
         Object[] params = {0, restaurantId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean addMenuItem(int restaurantId, MenuItem menuItem) {
+        String sql = "INSERT INTO menu_item(restaurant_id, name, image, description, base_price, food_category) " +
+                     "VALUES(?, ?, ?, ?, ?, ?) ";
+        Object[] params = {restaurantId, menuItem.getName(), menuItem.getImageLink(), menuItem.getDescription(),
+                          menuItem.getBasePrice(), menuItem.getFoodCategory()};
 
         return jdbcTemplate.update(sql, params) == 1;
     }

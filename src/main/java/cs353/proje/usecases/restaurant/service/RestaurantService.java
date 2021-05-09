@@ -69,7 +69,10 @@ public class RestaurantService {
     }
 
     public Response addMenuItem(int restaurantId, MenuItem menuItem){
-        return null;
+        if(restaurantRepository.addMenuItem(restaurantId, menuItem))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Menu item not added", null);
     }
 
     public Response removeMenuItem(int restaurantId, int menuItemId){
