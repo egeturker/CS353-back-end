@@ -52,14 +52,14 @@ public class RestaurantController {
     @PostMapping("/open/restaurant_id={id}")
     public Response open(@PathVariable(value="id") int restaurant_id)
     {
-        return null;
+        return restaurantService.open(restaurant_id);
     }
 
     //Restaurant states it is closed now, set its status to 0
     @PostMapping("/close/restaurant_id={id}")
     public Response close(@PathVariable(value="id") int restaurant_id)
     {
-        return null;
+        return restaurantService.close(restaurant_id);
     }
 
     //Restaurant adds a new region that it serves food to

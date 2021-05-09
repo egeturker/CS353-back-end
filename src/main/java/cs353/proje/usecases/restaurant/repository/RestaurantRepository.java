@@ -165,4 +165,20 @@ public class RestaurantRepository {
         return jdbcTemplate.query(sql, params, orderRowMapper);
 
     }
+
+    public boolean open(int restaurantId) {
+        String sql = "UPDATE restaurant SET status = ? " +
+                     "WHERE restaurant_id = ?";
+        Object[] params = {1, restaurantId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean close(int restaurantId) {
+        String sql = "UPDATE restaurant SET status = ? " +
+                     "WHERE restaurant_id = ?";
+        Object[] params = {0, restaurantId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
 }

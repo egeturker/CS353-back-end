@@ -35,17 +35,23 @@ public class RestaurantService {
             return new Response(true, "Restaurant not found", Collections.emptyList());
     }
 
-    public Response getOldOrders(int restaurantId) {
+    public Response getOldOrders(int restaurantId){
         List<Order> orders = restaurantRepository.getOldOrders(restaurantId);
         return new Response(true, "Success", orders);
     }
 
     public Response open(int restaurantId){
-        return null;
+        if(restaurantRepository.open(restaurantId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Restaurant not open", null);
     }
 
     public Response close(int restaurantId){
-        return null;
+        if(restaurantRepository.close(restaurantId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Restaurant not close", null);
     }
 
     public Response addServedRegion(int restaurantId, int regionId){
