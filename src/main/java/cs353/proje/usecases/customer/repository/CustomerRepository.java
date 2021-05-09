@@ -1,8 +1,8 @@
 package cs353.proje.usecases.customer.repository;
 
 import cs353.proje.usecases.common.dto.*;
-import cs353.proje.usecases.common.repository.RaffleCouponRepository;
 import cs353.proje.usecases.customer.dto.*;
+import cs353.proje.usecases.common.repository.RaffleCouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,11 +30,11 @@ public class CustomerRepository
         Restaurant restaurant = new Restaurant();
         restaurant.setRestaurantId(rs.getInt("restaurant_id"));
         restaurant.setOwnerId(rs.getInt("owner_id"));
-        restaurant.setRestaurant_name(rs.getString("restaurant_name"));
+        restaurant.setRestaurantName(rs.getString("restaurant_name"));
         restaurant.setRating(rs.getDouble("rating"));
         restaurant.setAddress(rs.getString("address"));
         restaurant.setDescription(rs.getString("description"));
-        restaurant.setRestaurant_category(rs.getString("restaurant_category"));
+        restaurant.setRestaurantCategory(rs.getString("restaurant_category"));
         restaurant.setStatus(rs.getString("status"));
         restaurant.setImage(rs.getString("image"));
 
@@ -101,7 +101,7 @@ public class CustomerRepository
         order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
         order.setPaymentMethod(rs.getString("payment_method"));
         order.setCoupon(rs.getString("coupon"));
-        order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurant_name());
+        order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
         //no such column in order
         return order;
     };

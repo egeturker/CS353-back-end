@@ -30,7 +30,7 @@ public class RaffleCouponRepository {
         coupon.setCustomerId(rs.getInt("customer_id"));
         coupon.setRestaurantId(rs.getInt("restaurant_id"));
         coupon.setUsed(false);
-        coupon.setRestaurantName(customerRepository.getRestaurantInfo(coupon.getRestaurantId()).getRestaurant_name());
+        coupon.setRestaurantName(customerRepository.getRestaurantInfo(coupon.getRestaurantId()).getRestaurantName());
 
         return coupon;
     };

@@ -1,7 +1,6 @@
 package cs353.proje.usecases.restaurant.controller;
 
 import cs353.proje.usecases.common.dto.MenuItem;
-import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
@@ -40,8 +39,7 @@ public class RestaurantController {
     @GetMapping("/orders/restaurant_id={id}")
     public Response getOldOrders(@PathVariable(value="id") int restaurant_id)
     {
-        List<Order> orderList;
-        return null;
+        return restaurantService.getOldOrders(restaurant_id);
     }
 
     @GetMapping("/getRestaurantId/owner_id={id}")

@@ -1,6 +1,7 @@
 package cs353.proje.usecases.restaurant.service;
 
 import cs353.proje.usecases.common.dto.MenuItem;
+import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
@@ -34,8 +35,9 @@ public class RestaurantService {
             return new Response(true, "Restaurant not found", Collections.emptyList());
     }
 
-    public Response getOldOrders(int restaurantId){
-        return null;
+    public Response getOldOrders(int restaurantId) {
+        List<Order> orders = restaurantRepository.getOldOrders(restaurantId);
+        return new Response(true, "Success", orders);
     }
 
     public Response open(int restaurantId){

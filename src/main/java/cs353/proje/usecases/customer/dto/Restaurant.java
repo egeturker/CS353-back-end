@@ -10,11 +10,11 @@ import lombok.Setter;
 public class Restaurant {
     private int restaurantId;
     private int ownerId;
-    private String restaurant_name;
+    private String restaurantName;
     private double rating;
     private String address;
     private String description;
     private String image;
-    private String restaurant_category;
+    private String restaurantCategory;
     private String status;
 }
