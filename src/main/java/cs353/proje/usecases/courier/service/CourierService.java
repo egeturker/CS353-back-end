@@ -1,6 +1,7 @@
 package cs353.proje.usecases.courier.service;
 
 import cs353.proje.usecases.common.dto.AssignedOrder;
+import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.courier.repository.CourierRepository;
@@ -47,6 +48,35 @@ public class CourierService {
             return new Response(true, "Success", assignments);
         else
             return new Response(true, "No assignments found", Collections.emptyList());
+    }
+
+    public Response getAcceptedOrder(int courierId){
+        List<Order> order = courierRepository.getAcceptedOrder(courierId);
+        if(order.size() == 1)
+            return new Response(true, "Success", order.get(0));
+        else
+            return new Response(true,"Accepted order not found", null);
+    }
+
+    public Response acceptAssignment(int courierId, int orderId){
+        if(courierRepository.acceptAssignment(courierId, orderId))
+            return new Response(true, "Success", null );
+        else
+            return new Response(false, "Unsuccessful", null);
+    }
+
+    public Response rejectAssignment(int courierId, int orderId){
+        if(courierRepository.rejectAssignment(courierId, orderId))
+            return new Response(true, "Success", null );
+        else
+            return new Response(false, "Unsuccessful", null);
+    }
+
+    public Response finalizeOrder(int courierId, int orderId){
+        if(courierRepository.finalizeOrder(courierId, orderId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Unsuccessful", null);
     }
 
 }

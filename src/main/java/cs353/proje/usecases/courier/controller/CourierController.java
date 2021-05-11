@@ -60,8 +60,7 @@ public class CourierController {
     @GetMapping("/getAcceptedOrder/courier_id={id}")
     public Response getAcceptedOrder(@PathVariable(value="id") int courier_id)
     {
-        Order acceptedOrder;
-        return null;
+        return courierService.getAcceptedOrder(courier_id);
     }
 
     //Courier accepts one of the assigned orders.
@@ -73,7 +72,7 @@ public class CourierController {
     public Response acceptAssignment(@PathVariable(value="courier_id") int courier_id,
                                 @PathVariable(value="order_id") int order_id)
     {
-        return null;
+        return courierService.acceptAssignment(courier_id, order_id);
     }
 
     //Courier rejects one of the assigned orders.
@@ -85,7 +84,7 @@ public class CourierController {
     public Response rejectAssignment(@PathVariable(value="courier_id") int courier_id,
                                      @PathVariable(value="order_id") int order_id)
     {
-        return null;
+        return courierService.rejectAssignment(courier_id, order_id);
     }
 
     //Courier finalizes the delivering process of the accepted order.
@@ -94,7 +93,7 @@ public class CourierController {
     public Response finalizeOrder(@PathVariable(value="courier_id") int courier_id,
                                      @PathVariable(value="order_id") int order_id)
     {
-        return null;
+        return courierService.finalizeOrder(courier_id, order_id);
     }
 
 }

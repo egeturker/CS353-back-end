@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,6 +64,23 @@ public class CourierRepository {
         assignedOrder.setRestaurantName(customerRepository.getRestaurantInfo(assignedOrder.getRestaurantId()).getRestaurantName());
 
         return assignedOrder;
+    };
+
+    RowMapper<Order> orderRowMapper = (rs, rowNum) ->{
+        Order order = new Order();
+        order.setOrderId(rs.getInt("order_id"));
+        order.setRestaurantId(rs.getInt("restaurant_id"));
+        order.setCustomerId(rs.getInt("customer_id"));
+        order.setPrice(rs.getDouble("price"));
+        order.setOrderTime(rs.getTimestamp("order_time"));
+        order.setDeliveryTime(rs.getTimestamp("delivery_time"));
+        order.setStatus(rs.getString("status"));
+        order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
+        order.setPaymentMethod(rs.getString("payment_method"));
+        order.setCoupon(rs.getString("coupon"));
+        order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
+
+        return order;
     };
 
 
@@ -115,6 +134,40 @@ public class CourierRepository {
         Object[] params = {courierId};
 
         return jdbcTemplate.query(sql, params, assignedOrderRowMapper);
+    }
+
+    public List<Order> getAcceptedOrder(int courierId){
+        String sql = "SELECT * FROM `order` " +
+                "INNER JOIN assigned_to ON assigned_to.order_id = `order`.order_id " +
+                "WHERE courier_id = ? AND order.status = 'Delivering' ";
+        Object[] params = {courierId};
+
+        return jdbcTemplate.query(sql, params, orderRowMapper );
+    }
+
+    public boolean acceptAssignment(int courierId, int orderId){
+        String sql = "UPDATE assigned_to SET decision = 'Accepted', decision_time = ? " +
+                "WHERE courier_id = ? AND order_id = ?";
+        Object[] params = {Timestamp.from(Instant.now()), courierId, orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean rejectAssignment(int courierId, int orderId){
+        String sql = "UPDATE assigned_to SET decision = 'Declined', decision_time = ? " +
+                "WHERE courier_id = ? AND order_id = ?";
+        Object[] params = {Timestamp.from(Instant.now()), courierId, orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean finalizeOrder(int courierId, int orderId){
+        String sql = "UPDATE `order` SET status = 'Delivered-Waiting Your Approval', delivery_time = ? " +
+                "WHERE order_id = ? AND EXISTS " +
+                "(SELECT * FROM assigned_to WHERE courier_id = ? AND order_id = ? AND decision = 'Accepted')";
+        Object[] params = {Timestamp.from(Instant.now()), orderId, courierId, orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
     }
 
 }
