@@ -1,5 +1,6 @@
 package cs353.proje.usecases.restaurant.controller;
 
+import cs353.proje.usecases.common.dto.Ingredient;
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
@@ -87,13 +88,51 @@ public class RestaurantController {
         return restaurantService.addMenuItem(restaurant_id, menuItem);
     }
 
+    //Restaurant updates a new MenuItem in its menu.
+    //No changes to the ingredients in this method.
+    @PostMapping("/updateMenuItem/restaurant_id={restaurant_id}")
+    public Response updateMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
+                                @RequestBody MenuItem menuItem)
+    {
+        return null;
+    }
 
+    //For the given menu_item_id, its ingredients are updated with the new given list of ingredients.
+    //There are three cases to consider:
+    //1. If the ingredient_id=-1 for an ingredient in the list, it is a newly added ingredient, insert it into the ingredient table
+    //2. If ingredient_id != -1, the information about this ingredient is being updated, so just update the ingredient table
+    //3. If this menuItem had an ingredient that was not given in this list, then it is being deleted. We can talk about this case in discord
+    @PostMapping("/updateIngredients/restaurant_id={restaurant_id}/menu_item_id={menu_item_id}")
+    public Response updateIngredients(@PathVariable(value="restaurant_id") int restaurant_id,
+                                      @PathVariable(value="menu_item_id") int menu_item_id,
+                                      @RequestBody List<Ingredient> ingredients)
+    {
+        return null;
+    }
+
+    //Talk about this in discord
     //THIS ONE CAN CAUSE PROBLEMS WHEN LOOKING AT THE OLD ORDERS, SO DON'T IMPLEMENT THIS FOR NOW
     //Restaurant removes one of its menu items, don't forget to check for the restaurant
     //and don't forget to remove all corresponding ingredients from the ingredient_list
     @PostMapping("/removeMenuItem/restaurant_id={restaurant_id}/menu_item_id={menu_item_id}")
     public Response removeMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
                                    @PathVariable(value="menu_item_id") int menu_item_id)
+    {
+        return null;
+    }
+
+    //Simply, status of the order will just be changed to "Preparing Food"
+    @PostMapping("/statusUpdate/preparing/order_id={order_id}")
+    public Response statusUpdatePreparing(@PathVariable(value="order_id") int order_id)
+    {
+        return null;
+    }
+
+    //Status of the order will be changed to "Waiting Courier"
+    //An available courier will be assigned to this order.
+    //What if no available courier?
+    @PostMapping("/statusUpdate/finalize/order_id={order_id}")
+    public Response statusUpdateFinalize(@PathVariable(value="order_id") int order_id)
     {
         return null;
     }
