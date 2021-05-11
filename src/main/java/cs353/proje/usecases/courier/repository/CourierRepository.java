@@ -1,9 +1,13 @@
 package cs353.proje.usecases.courier.repository;
 
+import cs353.proje.usecases.common.dto.AssignedOrder;
+import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.courier.dto.OperateRegion;
+import cs353.proje.usecases.customer.repository.CustomerRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -16,6 +20,10 @@ public class CourierRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Lazy
+    CustomerRepository customerRepository;
 
     RowMapper<Courier> courierRowMapper = (rs, rowNum) -> {
         Courier courier = new Courier();
@@ -34,6 +42,29 @@ public class CourierRepository {
 
         return courier;
     };
+
+    RowMapper<AssignedOrder> assignedOrderRowMapper = (rs, rowNum) ->{
+        AssignedOrder assignedOrder = new AssignedOrder();
+        assignedOrder.setCourierId(rs.getInt("courier_id"));
+        assignedOrder.setAssignmentTime(rs.getTimestamp("assignment_time"));
+        assignedOrder.setDecision(rs.getString("decision"));
+        assignedOrder.setDecisionTime(rs.getTimestamp("decision_time"));
+        assignedOrder.setOrderId(rs.getInt("order_id"));
+        assignedOrder.setRestaurantId(rs.getInt("restaurant_id"));
+        assignedOrder.setCustomerId(rs.getInt("customer_id"));
+        assignedOrder.setPrice(rs.getDouble("price"));
+        assignedOrder.setOrderTime(rs.getTimestamp("order_time"));
+        assignedOrder.setDeliveryTime(rs.getTimestamp("delivery_time"));
+        assignedOrder.setStatus(rs.getString("status"));
+        assignedOrder.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
+        assignedOrder.setPaymentMethod(rs.getString("payment_method"));
+        assignedOrder.setCoupon(rs.getString("coupon"));
+        assignedOrder.setRestaurantName(customerRepository.getRestaurantInfo(assignedOrder.getRestaurantId()).getRestaurantName());
+
+        return assignedOrder;
+    };
+
+
 
     public List<Courier> getCourierData(int courierId){
 
@@ -76,6 +107,14 @@ public class CourierRepository {
         }
 
         return (result > 0 && result2 > 0);
+    }
+
+    public List<AssignedOrder> getCurrentAssignments(int courierId){
+        String sql = "SELECT * FROM assigned_to " +
+                "INNER JOIN order ON order.order_id = assigned_to.order_id WHERE courier_id = ?";
+        Object[] params = {courierId};
+
+        return jdbcTemplate.query(sql, params, assignedOrderRowMapper);
     }
 
 }

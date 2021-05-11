@@ -50,8 +50,7 @@ public class CourierController {
     @GetMapping("/getCurrentAssignments/courier_id={id}")
     public Response getCurrentAssignments(@PathVariable(value="id") int courier_id)
     {
-        List<Order> assignedOrderList;
-        return null;
+        return courierService.getCurrentAssignments(courier_id);
     }
 
     //This is the assignment that the courier has accepted and currently delivering.
