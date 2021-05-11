@@ -10,6 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper=true)
 public class Courier extends User {
-    private String status;
+    private boolean status;
     private double rating;
 }

@@ -3,9 +3,11 @@ package cs353.proje.usecases.courier.controller;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.courier.dto.OperateRegion;
+import cs353.proje.usecases.courier.service.CourierService;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +17,13 @@ import java.util.List;
 @CrossOrigin
 public class CourierController {
 
+    @Autowired
+    CourierService courierService;
+
     @GetMapping("/courierData/courier_id={id}")
     public Response getCourierData(@PathVariable(value="id") int courier_id)
     {
-        Courier courier; //Return a Courier object in Response's data
-        return null;
+        return courierService.getCourierData(courier_id);
     }
 
     //Similar to updateCustomerData
@@ -28,7 +32,7 @@ public class CourierController {
     public Response updateCourierData(@PathVariable(value="id") int courier_id,
                                          @RequestBody User updatedCourierData)
     {
-        return null;
+        return courierService.updateCourierData(courier_id, updatedCourierData);
     }
 
     //Couriers update the regions that they operate in, together with the fees
