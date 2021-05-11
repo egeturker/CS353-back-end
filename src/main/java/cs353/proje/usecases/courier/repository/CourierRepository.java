@@ -1,5 +1,6 @@
 package cs353.proje.usecases.courier.repository;
 
+import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -58,6 +60,22 @@ public class CourierRepository {
         updatedCourierData.getSurname(), updatedCourierData.getUserType(), courierId};
 
         return jdbcTemplate.update(sql, params) == 1;
-
     }
+
+    public boolean updateOperateRegions(int courierId, List<OperateRegion> regions){
+
+        int result, result2 = 0;
+        String sql = "DELETE FROM operates_in WHERE courier_id = ? ";
+        Object[] params = {courierId};
+        result = jdbcTemplate.update(sql, params);
+
+        sql = "INSERT INTO operates_in(courier_id, region_id, fee) VALUES (?,?,?)";
+        for (OperateRegion region : regions) {
+            Object[] params2 = {courierId, region.getRegionId(), region.getFee()};
+            result2 = jdbcTemplate.update(sql, params2);
+        }
+
+        return (result > 0 && result2 > 0);
+    }
+
 }

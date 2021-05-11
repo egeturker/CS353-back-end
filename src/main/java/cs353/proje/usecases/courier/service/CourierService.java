@@ -1,6 +1,7 @@
 package cs353.proje.usecases.courier.service;
 
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.courier.repository.CourierRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
@@ -25,6 +26,13 @@ public class CourierService {
 
     public Response updateCourierData(int courierId, User updatedCourierData){
         if(courierRepository.updateCourierData(courierId, updatedCourierData))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Courier not found", null);
+    }
+
+    public Response updateOperateRegions(int courierId, List<OperateRegion> regions){
+        if(courierRepository.updateOperateRegions(courierId, regions))
             return new Response(true, "Success", null);
         else
             return new Response(false, "Courier not found", null);

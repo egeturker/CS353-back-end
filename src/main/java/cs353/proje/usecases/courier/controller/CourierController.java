@@ -36,13 +36,13 @@ public class CourierController {
     }
 
     //Couriers update the regions that they operate in, together with the fees
-    //If a courier was operating in region 1 before, and this new list doesn't contain the region 1, delete it from Assigned_To table
+    //If a courier was operating in region 1 before, and this new list doesn't contain the region 1, delete it from operates_in table
     //Otherwise insert into the table or update the fee of a currently existing row.
     @PostMapping("/updateRegions/courier_id={courier_id}")
     public Response updateOperateRegions(@PathVariable(value="courier_id") int courier_id,
                                      @RequestBody List<OperateRegion> regions)
     {
-        return null;
+        return courierService.updateOperateRegions(courier_id, regions);
     }
 
     //If there are no assignments, don't send null.
