@@ -64,6 +64,8 @@ public class CourierController {
     //Courier accepts one of the assigned orders.
     //Just changing the "decision" column in the "Assigned_To" table should be enough.
     //We can do the rest of the operations using a trigger. Talk about this in discord.
+
+    //Use trigger to reject the other assignments.
     @PostMapping("/acceptAssignment/courier_id={courier_id}/order_id={order_id}")
     public Response acceptAssignment(@PathVariable(value="courier_id") int courier_id,
                                 @PathVariable(value="order_id") int order_id)
@@ -74,6 +76,8 @@ public class CourierController {
     //Courier rejects one of the assigned orders.
     //Just changing the "decision" column in the "Assigned_To" table should be enough.
     //There is nothing else to do here.
+
+    //Use trigger to assign to another courier.
     @PostMapping("/rejectAssignment/courier_id={courier_id}/order_id={order_id}")
     public Response rejectAssignment(@PathVariable(value="courier_id") int courier_id,
                                      @PathVariable(value="order_id") int order_id)

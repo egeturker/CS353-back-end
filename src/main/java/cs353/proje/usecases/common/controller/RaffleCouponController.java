@@ -59,4 +59,12 @@ public class RaffleCouponController {
         return raffleCouponService.newRaffle(restaurant_id, raffle);
     }
 
+    //Restaurant finishes the raffle
+    @PostMapping("/finishRaffle/restaurant_id={restaurant_id}/raffle_id={raffle_id}")
+    public Response finishRaffle(@PathVariable(value="restaurant_id") int restaurant_id,
+                                 @PathVariable(value="raffle_id") int raffle_id)
+    {
+        return null;
+    }
+
 }

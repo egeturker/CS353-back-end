@@ -131,6 +131,8 @@ public class RestaurantController {
     //Status of the order will be changed to "Waiting Courier"
     //An available courier will be assigned to this order.
     //What if no available courier?
+
+    //Trigger for assigning random courier.
     @PostMapping("/statusUpdate/finalize/order_id={order_id}")
     public Response statusUpdateFinalize(@PathVariable(value="order_id") int order_id)
     {
