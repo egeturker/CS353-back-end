@@ -123,7 +123,7 @@ public class RaffleCouponRepository {
 
         Random random = new Random();
         upperBound = entries.size();
-        winner = random.nextInt(upperBound);
+        winner = entries.get(random.nextInt(upperBound));
 
         String sql = "UPDATE raffle SET winner = ? WHERE raffle_id = ?";
         Object[] params = {winner, raffleId};
