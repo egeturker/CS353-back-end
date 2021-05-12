@@ -143,7 +143,7 @@ public class RaffleCouponRepository {
 
     public boolean raffleCanFinish(int restaurantId, int raffleId){
         String sql = "SELECT COUNT(*) FROM raffle " +
-                "WHERE raffle_id = ? AND restaurant_id = ? AND ending_date < ?";
+                "WHERE raffle_id = ? AND restaurant_id = ? AND ending_date < ? AND winner IS NULL";
         Object[] params = {raffleId, restaurantId, Date.from(Instant.now())};
 
         return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
