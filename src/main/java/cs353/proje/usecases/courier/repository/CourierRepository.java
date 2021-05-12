@@ -189,4 +189,13 @@ public class CourierRepository {
         return jdbcTemplate.query(sql, params, operateRegionRowMapper);
     }
 
+    public List<Order> getOldOrders(int courierId){
+        String sql = "SELECT * FROM `order` " +
+                "INNER JOIN assigned_to ON assigned_to.order_id = order.order_id " +
+                "WHERE courier_id = ? ";
+        Object[] params = {courierId};
+
+        return jdbcTemplate.query(sql, params, orderRowMapper);
+    }
+
 }

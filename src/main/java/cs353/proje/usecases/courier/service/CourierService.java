@@ -80,4 +80,12 @@ public class CourierService {
             return new Response(false, "Unsuccessful", null);
     }
 
+    public Response getOldOrders(int courierId){
+        List<Order> oldOrders = courierRepository.getOldOrders(courierId);
+        if(oldOrders.size() > 0)
+            return new Response(true, "Success", oldOrders);
+        else
+            return new Response(true, "No orders found", Collections.emptyList());
+    }
+
 }

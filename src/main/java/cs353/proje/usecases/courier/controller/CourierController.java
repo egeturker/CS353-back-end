@@ -96,4 +96,10 @@ public class CourierController {
         return courierService.finalizeOrder(courier_id, order_id);
     }
 
+    @GetMapping("/orders/courier_id={id}")
+    public Response getOldOrders(@PathVariable(value="id") int courier_id)
+    {
+        return null; //courierService.getOldOrders(courier_id);
+    }
+
 }
