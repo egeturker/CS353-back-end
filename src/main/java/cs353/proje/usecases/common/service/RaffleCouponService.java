@@ -68,4 +68,12 @@ public class RaffleCouponService {
         }
     }
 
+    public Response finishRaffle(int restaurantId, int raffleId){
+        int winner = raffleCouponRepository.finishRaffle(restaurantId, raffleId);
+        if(winner > 0)
+            return new Response(true,"Success", winner);
+        else
+            return new Response(false,"Unsuccessful", null);
+    }
+
 }

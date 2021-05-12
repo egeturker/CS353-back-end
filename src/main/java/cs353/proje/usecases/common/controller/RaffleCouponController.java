@@ -64,7 +64,7 @@ public class RaffleCouponController {
     public Response finishRaffle(@PathVariable(value="restaurant_id") int restaurant_id,
                                  @PathVariable(value="raffle_id") int raffle_id)
     {
-        return null;
+        return raffleCouponService.finishRaffle(restaurant_id, raffle_id);
     }
 
 }

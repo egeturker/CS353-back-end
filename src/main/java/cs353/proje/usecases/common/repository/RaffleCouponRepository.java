@@ -2,6 +2,7 @@ package cs353.proje.usecases.common.repository;
 
 import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.Raffle;
+import cs353.proje.usecases.common.dto.RaffleEntry;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -9,9 +10,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Repository
 public class RaffleCouponRepository {
@@ -47,6 +51,15 @@ public class RaffleCouponRepository {
         return raffle;
     };
 
+    RowMapper<RaffleEntry> raffleEntryRowMapper = (rs, rowNum) ->{
+        RaffleEntry raffleEntry = new RaffleEntry();
+        raffleEntry.setRaffleId(rs.getInt("raffle_id"));
+        raffleEntry.setCustomerId(rs.getInt("customer_id"));
+        raffleEntry.setNumEntries(rs.getInt("num_entries"));
+
+        return raffleEntry;
+    };
+
     public List<Coupon> getCoupons(int customerId) {
         String sql = "SELECT * " +
                 "FROM coupon INNER JOIN restaurant ON coupon.restaurant_id = restaurant.restaurant_id " +
@@ -80,6 +93,7 @@ public class RaffleCouponRepository {
 
         return jdbcTemplate.queryForList(sql, params, Integer.class);
     }
+
     public boolean newRaffle(int restaurantId, Raffle raffle){
         String sql = "INSERT INTO raffle(coupon_prize, ending_date, min_entry_price," +
                 " restaurant_id, starting_date, winner) VALUES (?,?,?,?,?,?)";
@@ -88,4 +102,52 @@ public class RaffleCouponRepository {
 
         return (jdbcTemplate.update(sql, params) > 0);
     }
+
+    //Returns winner
+    public int finishRaffle(int restaurantId, int raffleId){
+        if(!raffleCanFinish(restaurantId, raffleId))
+            return -1;
+
+        int entryAmount, customerId, upperBound, winner;
+
+        List<RaffleEntry> participants = getRaffleParticipants(raffleId);
+        ArrayList<Integer> entries = new ArrayList<>();
+
+        for (RaffleEntry participant : participants) {
+            entryAmount = participant.getNumEntries();
+            customerId = participant.getCustomerId();
+
+            for (int j = 0; j < entryAmount; j++)
+                entries.add(customerId);
+        }
+
+        Random random = new Random();
+        upperBound = entries.size();
+        winner = random.nextInt(upperBound);
+
+        String sql = "UPDATE raffle SET winner = ? WHERE raffle_id = ?";
+        Object[] params = {winner, raffleId};
+
+        if(jdbcTemplate.update(sql, params) == 1)
+            return winner;
+        else
+            return -1;
+    }
+
+    public List<RaffleEntry> getRaffleParticipants(int raffleId){
+        String sql = "SELECT * FROM participates WHERE raffle_id = ?";
+        Object[] params = {raffleId};
+
+        return jdbcTemplate.query(sql, params, raffleEntryRowMapper);
+    }
+
+    public boolean raffleCanFinish(int restaurantId, int raffleId){
+        String sql = "SELECT COUNT(*) FROM raffle " +
+                "WHERE raffle_id = ? AND restaurant_id = ? AND ending_date < ?";
+        Object[] params = {raffleId, restaurantId, Date.from(Instant.now())};
+
+        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
+    }
+
+
 }
