@@ -3,6 +3,7 @@ package cs353.proje.usecases.courier.service;
 import cs353.proje.usecases.common.dto.AssignedOrder;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
+import cs353.proje.usecases.courier.dto.AllCourierData;
 import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.courier.repository.CourierRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
@@ -21,9 +22,9 @@ public class CourierService {
     CourierRepository courierRepository;
 
     public Response getCourierData(int courierId){
-        List<Courier> courier = courierRepository.getCourierData(courierId);
-        if(courier.size() == 1)
-            return new Response(true, "Success", courier.get(0));
+        List<AllCourierData> allCourierData = courierRepository.getCourierData(courierId);
+        if(allCourierData.size() == 1)
+            return new Response(true, "Success", allCourierData.get(0));
         else
             return new Response(false,"Courier not found", null);
     }

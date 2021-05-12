@@ -2,6 +2,7 @@ package cs353.proje.usecases.courier.repository;
 
 import cs353.proje.usecases.common.dto.AssignedOrder;
 import cs353.proje.usecases.common.dto.Order;
+import cs353.proje.usecases.courier.dto.AllCourierData;
 import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
@@ -27,8 +28,9 @@ public class CourierRepository {
     @Lazy
     CustomerRepository customerRepository;
 
-    RowMapper<Courier> courierRowMapper = (rs, rowNum) -> {
-        Courier courier = new Courier();
+    RowMapper<AllCourierData> allCourierDataRowMapper = (rs, rowNum) -> {
+        AllCourierData allCourierData = new AllCourierData();
+        Courier courier = allCourierData.getCourier();
         courier.setUserId(rs.getInt("courier_id"));
         courier.setStatus(rs.getBoolean("status"));
         courier.setRating(rs.getDouble("rating"));
@@ -42,7 +44,9 @@ public class CourierRepository {
         courier.setSurname(rs.getString("surname"));
         courier.setUserType(rs.getString("user_type"));
 
-        return courier;
+        allCourierData.setOperateRegions(getOperateRegions(courier.getUserId()));
+
+        return allCourierData;
     };
 
     RowMapper<AssignedOrder> assignedOrderRowMapper = (rs, rowNum) ->{
@@ -83,15 +87,23 @@ public class CourierRepository {
         return order;
     };
 
+    RowMapper<OperateRegion> operateRegionRowMapper = (rs, rowNum) ->{
+        OperateRegion operateRegion = new OperateRegion();
+        operateRegion.setRegionId(rs.getInt("region_id"));
+        operateRegion.setFee(rs.getDouble("fee"));
+
+        return operateRegion;
+    };
 
 
-    public List<Courier> getCourierData(int courierId){
+
+    public List<AllCourierData> getCourierData(int courierId){
 
         String sql = "SELECT * FROM courier INNER JOIN user " +
                 "ON user.user_id = courier.courier_id WHERE courier.courier_id = ?";
         Object[] params = {courierId};
 
-        return jdbcTemplate.query(sql, params, courierRowMapper);
+        return jdbcTemplate.query(sql, params, allCourierDataRowMapper);
     }
 
     public boolean updateCourierData(int courierId, User updatedCourierData){
@@ -168,6 +180,13 @@ public class CourierRepository {
         Object[] params = {Timestamp.from(Instant.now()), orderId, courierId, orderId};
 
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public List<OperateRegion> getOperateRegions(int courierId){
+        String sql = "SELECT region_id, fee FROM operates_in WHERE courier_id = ?";
+        Object[] params = {courierId};
+
+        return jdbcTemplate.query(sql, params, operateRegionRowMapper);
     }
 
 }
