@@ -136,7 +136,7 @@ public class RestaurantController {
     @PostMapping("/statusUpdate/finalize/order_id={order_id}")
     public Response statusUpdateFinalize(@PathVariable(value="order_id") int order_id)
     {
-        return null;
+        return restaurantService.statusUpdateFinalize(order_id);
     }
 
 }

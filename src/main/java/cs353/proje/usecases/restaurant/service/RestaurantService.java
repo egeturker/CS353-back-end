@@ -111,4 +111,11 @@ public class RestaurantService {
         else
             return new Response(false, "Unsuccessful status update", null);
     }
+
+    public Response statusUpdateFinalize(int orderId) {
+        if(restaurantRepository.statusUpdateFinalize(orderId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Unsuccessful status update", null);
+    }
 }

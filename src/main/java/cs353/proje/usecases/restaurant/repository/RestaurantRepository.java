@@ -308,4 +308,12 @@ public class RestaurantRepository {
 
         return jdbcTemplate.update(sql, params) == 1;
     }
+
+    public boolean statusUpdateFinalize(int orderId) {
+        String sql = "UPDATE `order` SET status = ? " +
+                     "WHERE order_id = ? ";
+        Object[] params = {"Waiting Courier", orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
 }
