@@ -83,8 +83,11 @@ public class RestaurantService {
             return new Response(false, "Menu item not updated", null);
     }
 
-    public Response removeMenuItem(int restaurantId, int menuItemId){
-        return null;
+    public Response removeMenuItem(int restaurantId, int menuItemId) {
+        if(restaurantRepository.removeMenuItem(restaurantId, menuItemId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Menu item not removed", null);
     }
 
     public Response updateIngredients(int restaurantId, int menuItemId, List<Ingredient> ingredients) {

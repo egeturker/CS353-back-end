@@ -105,7 +105,7 @@ public class RestaurantController {
     public Response removeMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
                                    @PathVariable(value="menu_item_id") int menu_item_id)
     {
-        return null;
+        return restaurantService.removeMenuItem(restaurant_id, menu_item_id);
     }
 
     //For the given menu_item_id, its ingredients are updated with the new given list of ingredients.

@@ -15,5 +15,5 @@ public class MenuItem {
     private String description;
     private double basePrice;
     private String foodCategory;
-
+    private boolean deleted;
 }

@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -81,6 +82,20 @@ public class RestaurantRepository {
         order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
 
         return order;
+    };
+
+    RowMapper<MenuItem> menuItemRowMapper = (rs, rowNum) ->{
+        MenuItem menu_item = new MenuItem();
+        menu_item.setRestaurantId(rs.getInt("restaurant_id"));
+        menu_item.setMenuItemId(rs.getInt("menu_item_id"));
+        menu_item.setName(rs.getString("name"));
+        menu_item.setImageLink(rs.getString("image"));
+        menu_item.setDescription(rs.getString("description"));
+        menu_item.setBasePrice(rs.getDouble("base_price"));
+        menu_item.setFoodCategory(rs.getString("food_category"));
+        menu_item.setDeleted(rs.getBoolean("deleted"));
+
+        return menu_item;
     };
 
     RowMapper<Ingredient> ingredientRowMapper = (rs, rowNum) ->{
@@ -212,6 +227,15 @@ public class RestaurantRepository {
                            menuItem.getFoodCategory(), menuItem.getMenuItemId(), restaurantId};
 
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean removeMenuItem(int restaurantId, int menuItemId) {
+        String sql = "UPDATE menu_item SET deleted = ? " +
+                "WHERE restaurant_id = ? AND menu_item_id = ? ";
+        Object[] params = {1, restaurantId, menuItemId};
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        return jdbcTemplate.update(sql, params) == 1 && updateIngredients(restaurantId, menuItemId, ingredients);
     }
 
     public boolean updateIngredients(int restaurantId, int menuItemId, List<Ingredient> ingredients) {
