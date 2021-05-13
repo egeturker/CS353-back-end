@@ -115,11 +115,10 @@ public class CourierRepository {
                 "telephone = ?, " +
                 "image = ?, " +
                 "name = ?, " +
-                "surname = ?," +
-                "userType = ? WHERE user.user_id = ?";
+                "surname = ? WHERE user.user_id = ?";
         Object[] params = {updatedCourierData.getEmail(), updatedCourierData.getUsername(), updatedCourierData.getPassword(),
         updatedCourierData.getTelephone(), updatedCourierData.getImage(), updatedCourierData.getName(),
-        updatedCourierData.getSurname(), updatedCourierData.getUserType(), courierId};
+        updatedCourierData.getSurname(), courierId};
 
         return jdbcTemplate.update(sql, params) == 1;
     }
