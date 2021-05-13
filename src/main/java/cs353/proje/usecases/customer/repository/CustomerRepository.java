@@ -565,23 +565,50 @@ public class CustomerRepository
         return jdbcTemplate.query(sql, params, favoriteRowMapper);
     }
 
-    public void updateRaffleParticipation(OrderFromCustomer order) {
+    public RaffleEntryResults updateRaffleParticipation(OrderFromCustomer order) {
         List<Raffle> raffles = raffleCouponRepository.getRaffle(order.getRestaurantId());
         if(raffles.size() > 0) {
             List<Integer> num_entries = raffleCouponRepository.getEntryAmount(order.getCustomerId(), order.getRestaurantId());
             if(num_entries.size() == 0) {
                 String sql = "INSERT INTO participates (customer_id, raffle_id, num_entries) " +
                              "VALUES (?, ?, ?) ";
-                Object[] params = {order.getCustomerId(), raffles.get(0).getRaffleId(), 1};
+                double min_entry_amount = raffles.get(0).getMinEntryPrice();
+                double order_total = order.getPrice();
+                int new_entries = (int) (order_total / min_entry_amount);
+                Object[] params = {order.getCustomerId(), raffles.get(0).getRaffleId(), new_entries};
                 jdbcTemplate.update(sql, params);
+
+                RaffleEntryResults result = new RaffleEntryResults();
+                result.setNewEntries(new_entries);
+                result.setTotalEntries(new_entries);
+                result.setMinimumEntryAmount(min_entry_amount);
+
+                return result;
+
             }
             else {
-                int new_value = num_entries.get(0) + 1;
+                double min_entry_amount = raffles.get(0).getMinEntryPrice();
+                double order_total = order.getPrice();
+                int new_entries = (int) (order_total / min_entry_amount);
+                int new_value = num_entries.get(0) + new_entries;
                 String sql = "UPDATE participates SET num_entries = ? " +
                         "WHERE customer_id = ? AND raffle_id = ? ";
                 Object[] params = {new_value, order.getCustomerId(), raffles.get(0).getRaffleId()};
                 jdbcTemplate.update(sql, params);
+
+                RaffleEntryResults result = new RaffleEntryResults();
+                result.setNewEntries(new_entries);
+                result.setTotalEntries(new_value);
+                result.setMinimumEntryAmount(min_entry_amount);
+
+                return result;
             }
         }
+        RaffleEntryResults result = new RaffleEntryResults();
+        result.setNewEntries(-1);
+        result.setTotalEntries(-1);
+        result.setMinimumEntryAmount(-1);
+
+        return result;
     }
 }

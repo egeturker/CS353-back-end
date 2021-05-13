@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RaffleEntryResults {
-
     private int newEntries;
     private int totalEntries;
-    private int minimumEntryAmount;
-
+    private double minimumEntryAmount;
 }

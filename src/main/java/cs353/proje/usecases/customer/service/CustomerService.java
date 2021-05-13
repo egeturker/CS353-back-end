@@ -1,10 +1,7 @@
 package cs353.proje.usecases.customer.service;
 
 import cs353.proje.usecases.common.dto.*;
-import cs353.proje.usecases.customer.dto.Customer;
-import cs353.proje.usecases.customer.dto.OrderDetails;
-import cs353.proje.usecases.customer.dto.OrderFromCustomer;
-import cs353.proje.usecases.customer.dto.Restaurant;
+import cs353.proje.usecases.customer.dto.*;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,8 +143,9 @@ public class CustomerService
     public Response createNewOrder(OrderFromCustomer order)
     {
         if(customerRepository.createNewOrder(order)) {
-            customerRepository.updateRaffleParticipation(order);
-            return new Response(true, "Success", null);
+            //If the restaurant has no raffles, then RaffleEntryResults' attributes are set to -1
+            RaffleEntryResults result = customerRepository.updateRaffleParticipation(order);
+            return new Response(true, "Success", result);
         }
         else {
             return new Response(false, "Order not placed", null);

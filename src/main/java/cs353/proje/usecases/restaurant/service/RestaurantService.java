@@ -105,4 +105,10 @@ public class RestaurantService {
             return new Response(false, "Unsuccessful", null);
     }
 
+    public Response statusUpdatePreparing(int orderId) {
+        if(restaurantRepository.statusUpdatePreparing(orderId))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Unsuccessful status update", null);
+    }
 }

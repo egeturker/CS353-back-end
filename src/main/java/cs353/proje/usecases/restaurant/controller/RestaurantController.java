@@ -125,7 +125,7 @@ public class RestaurantController {
     @PostMapping("/statusUpdate/preparing/order_id={order_id}")
     public Response statusUpdatePreparing(@PathVariable(value="order_id") int order_id)
     {
-        return null;
+        return restaurantService.statusUpdatePreparing(order_id);
     }
 
     //Status of the order will be changed to "Waiting Courier"
