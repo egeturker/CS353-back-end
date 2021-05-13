@@ -1,5 +1,6 @@
 package cs353.proje.usecases.restaurant.repository;
 
+import cs353.proje.usecases.common.dto.Ingredient;
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Region;
@@ -80,6 +81,18 @@ public class RestaurantRepository {
         order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
 
         return order;
+    };
+
+    RowMapper<Ingredient> ingredientRowMapper = (rs, rowNum) ->{
+        Ingredient ingredient = new Ingredient();
+        ingredient.setMenuItemId(rs.getInt("menu_item_id"));
+        ingredient.setIngredientId(rs.getInt("ingredient_id"));
+        ingredient.setIngredientName(rs.getString("ingredient_name"));
+        ingredient.setDefaultIngredient(rs.getBoolean("default_ingredient"));
+        ingredient.setAdditionalPrice(rs.getDouble("additional_price"));
+        ingredient.setDeleted(rs.getBoolean("deleted"));
+
+        return ingredient;
     };
 
     public boolean updateRestaurantData(int restaurantId, UpdatedRestaurantData updatedRestaurantData){
@@ -190,5 +203,77 @@ public class RestaurantRepository {
                           menuItem.getBasePrice(), menuItem.getFoodCategory()};
 
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean updateMenuItem(int restaurantId, MenuItem menuItem) {
+        String sql = "UPDATE menu_item SET `name` = ?, image = ?, description = ?, base_price = ?, food_category = ?" +
+                     "WHERE menu_item_id = ? AND restaurant_id = ? ";
+        Object[] params = {menuItem.getName(), menuItem.getImageLink(), menuItem.getDescription(), menuItem.getBasePrice(),
+                           menuItem.getFoodCategory(), menuItem.getMenuItemId(), restaurantId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean updateIngredients(int restaurantId, int menuItemId, List<Ingredient> ingredients) {
+        String sql_menu_item = "SELECT COUNT(*) " +
+                     "FROM menu_item " +
+                     "WHERE restaurant_id = ? AND menu_item_id = ? ";
+        Object[] params_menu_item = {restaurantId, menuItemId};
+        List<Integer> menu_item = jdbcTemplate.query(sql_menu_item, params_menu_item, integerRowMapper);
+        int menu_item_exits = menu_item.get(0);
+        if(menu_item_exits == 1) {
+            //menu_item has an ingredient that is not given in this list (it is being deleted).
+            String sql_ingredients = "SELECT * FROM ingredient " +
+                                     "WHERE menu_item_id = ? AND deleted = ? ";
+            Object[] params_ingredients = {menuItemId, 0};
+            List<Ingredient> item_ingredients = jdbcTemplate.query(sql_ingredients, params_ingredients, ingredientRowMapper);
+
+            //menu item's ingredients in the ingredient table
+            int item_ingredients_size = item_ingredients.size();
+            int ingredients_size = ingredients.size();
+            boolean result = true;
+            boolean exist = false;
+            for(int i = 0; i < item_ingredients_size && result; i++){
+                Ingredient item_ingredient = item_ingredients.get(i);
+                for(int m = 0; m < ingredients_size && !exist; m++) {
+                    Ingredient ingredient = ingredients.get(m);
+                    if(item_ingredient.getIngredientId() == ingredient.getIngredientId()){
+                        exist = true;
+                    }
+                }
+                if(!exist) {
+                    String sql = "UPDATE ingredient SET deleted = ? " +
+                                 "WHERE ingredient_id = ? ";
+                    Object[] params = {1, item_ingredient.getIngredientId()};
+
+                    result = jdbcTemplate.update(sql, params) == 1;
+                }
+                exist = false;
+            }
+
+            for (int i = 0; i < ingredients_size && result; i++) {
+                Ingredient ingredient = ingredients.get(i);
+                int ingredient_id = ingredient.getIngredientId();
+                if (ingredient_id != -1) {
+                    String sql = "UPDATE ingredient SET ingredient_name = ?, menu_item_id = ?, additional_price = ?, default_ingredient = ? " +
+                            "WHERE ingredient_id = ? ";
+                    Object[] params = {ingredient.getIngredientName(), ingredient.getMenuItemId(), ingredient.getAdditionalPrice(), ingredient.isDefaultIngredient(),
+                            ingredient.getIngredientId()};
+
+                    result = jdbcTemplate.update(sql, params) == 1;
+                } else {
+                    String sql = "INSERT INTO ingredient(ingredient_name, menu_item_id, additional_price, default_ingredient) " +
+                            "VALUES(?, ?, ?, ?) ";
+                    Object[] params = {ingredient.getIngredientName(), ingredient.getMenuItemId(), ingredient.getAdditionalPrice(),
+                            ingredient.isDefaultIngredient()};
+
+                    result = jdbcTemplate.update(sql, params) == 1;
+                }
+            }
+            return result;
+        }
+        else {
+            return false;
+        }
     }
 }

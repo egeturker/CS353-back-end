@@ -94,6 +94,17 @@ public class RestaurantController {
     public Response updateMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
                                 @RequestBody MenuItem menuItem)
     {
+        return restaurantService.updateMenuItem(restaurant_id, menuItem);
+    }
+
+    //Talk about this in discord
+    //THIS ONE CAN CAUSE PROBLEMS WHEN LOOKING AT THE OLD ORDERS, SO DON'T IMPLEMENT THIS FOR NOW
+    //Restaurant removes one of its menu items, don't forget to check for the restaurant
+    //and don't forget to remove all corresponding ingredients from the ingredient_list
+    @PostMapping("/removeMenuItem/restaurant_id={restaurant_id}/menu_item_id={menu_item_id}")
+    public Response removeMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
+                                   @PathVariable(value="menu_item_id") int menu_item_id)
+    {
         return null;
     }
 
@@ -107,18 +118,7 @@ public class RestaurantController {
                                       @PathVariable(value="menu_item_id") int menu_item_id,
                                       @RequestBody List<Ingredient> ingredients)
     {
-        return null;
-    }
-
-    //Talk about this in discord
-    //THIS ONE CAN CAUSE PROBLEMS WHEN LOOKING AT THE OLD ORDERS, SO DON'T IMPLEMENT THIS FOR NOW
-    //Restaurant removes one of its menu items, don't forget to check for the restaurant
-    //and don't forget to remove all corresponding ingredients from the ingredient_list
-    @PostMapping("/removeMenuItem/restaurant_id={restaurant_id}/menu_item_id={menu_item_id}")
-    public Response removeMenuItem(@PathVariable(value="restaurant_id") int restaurant_id,
-                                   @PathVariable(value="menu_item_id") int menu_item_id)
-    {
-        return null;
+        return restaurantService.updateIngredients(restaurant_id, menu_item_id, ingredients);
     }
 
     //Simply, status of the order will just be changed to "Preparing Food"

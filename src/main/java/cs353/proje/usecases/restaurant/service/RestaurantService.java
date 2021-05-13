@@ -1,5 +1,6 @@
 package cs353.proje.usecases.restaurant.service;
 
+import cs353.proje.usecases.common.dto.Ingredient;
 import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
@@ -75,8 +76,22 @@ public class RestaurantService {
             return new Response(false, "Menu item not added", null);
     }
 
+    public Response updateMenuItem(int restaurantId, MenuItem menuItem) {
+        if(restaurantRepository.updateMenuItem(restaurantId, menuItem))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Menu item not updated", null);
+    }
+
     public Response removeMenuItem(int restaurantId, int menuItemId){
         return null;
+    }
+
+    public Response updateIngredients(int restaurantId, int menuItemId, List<Ingredient> ingredients) {
+        if(restaurantRepository.updateIngredients(restaurantId, menuItemId, ingredients))
+            return new Response(true, "Success", null);
+        else
+            return new Response(false, "Ingredients not updated", null);
     }
 
     public Response getRestaurantId(int ownerId) {
@@ -86,4 +101,5 @@ public class RestaurantService {
         else
             return new Response(false, "Unsuccessful", null);
     }
+
 }

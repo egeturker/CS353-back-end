@@ -13,4 +13,5 @@ public class Ingredient {
     private String ingredientName;
     private boolean defaultIngredient;
     private double additionalPrice;
+    private boolean deleted;
 }
