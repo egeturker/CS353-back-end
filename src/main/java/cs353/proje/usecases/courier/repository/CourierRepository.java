@@ -30,7 +30,7 @@ public class CourierRepository {
 
     RowMapper<AllCourierData> allCourierDataRowMapper = (rs, rowNum) -> {
         AllCourierData allCourierData = new AllCourierData();
-        Courier courier = allCourierData.getCourier();
+        Courier courier = new Courier();
         courier.setUserId(rs.getInt("courier_id"));
         courier.setStatus(rs.getBoolean("status"));
         courier.setRating(rs.getDouble("rating"));
@@ -44,6 +44,7 @@ public class CourierRepository {
         courier.setSurname(rs.getString("surname"));
         courier.setUserType(rs.getString("user_type"));
 
+        allCourierData.setCourier(courier);
         allCourierData.setOperateRegions(getOperateRegions(courier.getUserId()));
 
         return allCourierData;
