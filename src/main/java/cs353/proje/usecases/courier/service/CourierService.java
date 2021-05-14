@@ -5,6 +5,7 @@ import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.courier.dto.AllCourierData;
 import cs353.proje.usecases.courier.dto.OperateRegion;
+import cs353.proje.usecases.courier.dto.OrderDetailsForCourier;
 import cs353.proje.usecases.courier.repository.CourierRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
@@ -44,27 +45,27 @@ public class CourierService {
     }
 
     public Response getCurrentAssignments(int courierId){
-        List<AssignedOrder> assignments = courierRepository.getCurrentAssignments(courierId);
-        if(assignments.size() >= 1)
-            return new Response(true, "Success", assignments);
+        List<OrderDetailsForCourier> orderDetailsForCouriers = courierRepository.getCurrentAssignments(courierId);
+        if(orderDetailsForCouriers.size() >= 1)
+            return new Response(true, "Success", orderDetailsForCouriers);
         else
             return new Response(true, "No assignments found", Collections.emptyList());
     }
 
     public Response getAcceptedOrder(int courierId){
-        List<Order> order = courierRepository.getAcceptedOrder(courierId);
-        if(order.size() == 1)
-            return new Response(true, "Success", order.get(0));
+        List<OrderDetailsForCourier> orderDetailsForCouriers = courierRepository.getAcceptedOrder(courierId);
+        if(orderDetailsForCouriers.size() == 1)
+            return new Response(true, "Success", orderDetailsForCouriers.get(0));
         else
             return new Response(true,"Accepted order not found", null);
     }
 
     public Response acceptAssignment(int courierId, int orderId){
         if(courierRepository.acceptAssignment(courierId, orderId)){
-            List<AssignedOrder> assignedOrders = courierRepository.getCurrentAssignments(courierId);
-            for (AssignedOrder assignedOrder : assignedOrders)
-                if (assignedOrder.getOrderId() != orderId)
-                    courierRepository.rejectAssignment(assignedOrder.getCourierId(), assignedOrder.getOrderId());
+            List<OrderDetailsForCourier> orderDetailsForCouriers = courierRepository.getCurrentAssignments(courierId);
+            for (OrderDetailsForCourier orderDetailsForCourier : orderDetailsForCouriers)
+                if (orderDetailsForCourier.getOrder().getOrderId() != orderId)
+                    courierRepository.rejectAssignment(courierId, orderId);
             if(courierRepository.statusUpdateDelivering(orderId) && courierRepository.close(courierId))
                 return new Response(true, "Success", null );
             else
@@ -90,9 +91,9 @@ public class CourierService {
     }
 
     public Response getOldOrders(int courierId){
-        List<Order> oldOrders = courierRepository.getOldOrders(courierId);
-        if(oldOrders.size() > 0)
-            return new Response(true, "Success", oldOrders);
+        List<OrderDetailsForCourier> orderDetailsForCouriers = courierRepository.getOldOrders(courierId);
+        if(orderDetailsForCouriers.size() > 0)
+            return new Response(true, "Success", orderDetailsForCouriers);
         else
             return new Response(true, "No orders found", Collections.emptyList());
     }

@@ -4,6 +4,7 @@ import cs353.proje.usecases.common.dto.AssignedOrder;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.courier.dto.AllCourierData;
 import cs353.proje.usecases.courier.dto.OperateRegion;
+import cs353.proje.usecases.courier.dto.OrderDetailsForCourier;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
@@ -96,6 +97,32 @@ public class CourierRepository {
         return operateRegion;
     };
 
+    RowMapper<OrderDetailsForCourier> orderDetailsForCourierRowMapper = (rs, rowNum) ->{
+        Order order = new Order();
+        order.setOrderId(rs.getInt("order_id"));
+        order.setRestaurantId(rs.getInt("restaurant_id"));
+        order.setCustomerId(rs.getInt("customer_id"));
+        order.setPrice(rs.getDouble("price"));
+        order.setOrderTime(rs.getTimestamp("order_time"));
+        order.setDeliveryTime(rs.getTimestamp("delivery_time"));
+        order.setStatus(rs.getString("status"));
+        order.setOptionalDeliveryTime(rs.getTimestamp("optional_delivery_time"));
+        order.setPaymentMethod(rs.getString("payment_method"));
+        order.setCoupon(rs.getString("coupon"));
+        order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
+
+        OrderDetailsForCourier orderDetailsForCourier = new OrderDetailsForCourier();
+        orderDetailsForCourier.setOrder(order);
+        orderDetailsForCourier.setCustomerName(rs.getString("name"));
+        orderDetailsForCourier.setCustomerSurname(rs.getString("surname"));
+        orderDetailsForCourier.setCustomerImage(rs.getString("image"));
+        orderDetailsForCourier.setCustomerAddress(rs.getString("address"));
+        orderDetailsForCourier.setCustomerRegionName(rs.getString("region_name"));
+        orderDetailsForCourier.setCustomerTelephone(rs.getString("telephone"));
+        orderDetailsForCourier.setCourierScore(getCourierScoreFromReview(order.getOrderId()));
+
+        return orderDetailsForCourier;
+    };
 
 
     public List<AllCourierData> getCourierData(int courierId){
@@ -142,22 +169,28 @@ public class CourierRepository {
         return (result > 0 && result2 > 0);
     }
 
-    public List<AssignedOrder> getCurrentAssignments(int courierId){
+    public List<OrderDetailsForCourier> getCurrentAssignments(int courierId){
         String sql = "SELECT * FROM assigned_to " +
                 "INNER JOIN `order` ON `order`.order_id = assigned_to.order_id " +
+                "INNER JOIN customer ON customer.customer_id = order.customer_id " +
+                "INNER JOIN user ON user.user_id = customer.customer_id " +
+                "INNER JOIN region ON region.region_id = customer.region_id " +
                 "WHERE decision = 'Pending' AND courier_id = ?";
         Object[] params = {courierId};
 
-        return jdbcTemplate.query(sql, params, assignedOrderRowMapper);
+        return jdbcTemplate.query(sql, params, orderDetailsForCourierRowMapper);
     }
 
-    public List<Order> getAcceptedOrder(int courierId){
+    public List<OrderDetailsForCourier> getAcceptedOrder(int courierId){
         String sql = "SELECT * FROM `order` " +
                 "INNER JOIN assigned_to ON assigned_to.order_id = `order`.order_id " +
+                "INNER JOIN customer ON customer.customer_id = order.customer_id " +
+                "INNER JOIN user ON user.user_id = customer.customer_id " +
+                "INNER JOIN region ON region.region_id = customer.region_id " +
                 "WHERE courier_id = ? AND order.status = 'Delivering' ";
         Object[] params = {courierId};
 
-        return jdbcTemplate.query(sql, params, orderRowMapper );
+        return jdbcTemplate.query(sql, params, orderDetailsForCourierRowMapper );
     }
 
     public boolean acceptAssignment(int courierId, int orderId){
@@ -193,13 +226,16 @@ public class CourierRepository {
         return jdbcTemplate.query(sql, params, operateRegionRowMapper);
     }
 
-    public List<Order> getOldOrders(int courierId){
+    public List<OrderDetailsForCourier> getOldOrders(int courierId){
         String sql = "SELECT * FROM `order` " +
                 "INNER JOIN assigned_to ON assigned_to.order_id = order.order_id " +
+                "INNER JOIN customer ON customer.customer_id = order.customer_id " +
+                "INNER JOIN user ON user.user_id = customer.customer_id " +
+                "INNER JOIN region ON region.region_id = customer.region_id " +
                 "WHERE courier_id = ? ";
         Object[] params = {courierId};
 
-        return jdbcTemplate.query(sql, params, orderRowMapper);
+        return jdbcTemplate.query(sql, params,orderDetailsForCourierRowMapper);
     }
 
     public boolean statusUpdateDelivering(int orderId) {
@@ -235,10 +271,23 @@ public class CourierRepository {
     }
 
     public boolean getCourierStatus(int courierId){
-        String sql = "SELECT status from courier WHERE courier_id = ?";
+        String sql = "SELECT status FROM courier WHERE courier_id = ?";
         Object[] params = {courierId};
 
         return jdbcTemplate.queryForObject(sql, params, Boolean.class);
+    }
+
+    public int getCourierScoreFromReview(int orderId){
+        String sql = "SELECT courier_score FROM" +
+                " review WHERE order_id = ?";
+        Object[] params = {orderId};
+
+        int score;
+        if(jdbcTemplate.queryForObject(sql, params, Integer.class) != null)
+            score = jdbcTemplate.queryForObject(sql, params, Integer.class);
+        else
+            score = 0;
+        return score;
     }
 
 }
