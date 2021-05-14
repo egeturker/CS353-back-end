@@ -65,7 +65,7 @@ public class CourierService {
             for (AssignedOrder assignedOrder : assignedOrders)
                 if (assignedOrder.getOrderId() != orderId)
                     courierRepository.rejectAssignment(assignedOrder.getCourierId(), assignedOrder.getOrderId());
-            if(courierRepository.statusUpdateDelivering(orderId))
+            if(courierRepository.statusUpdateDelivering(orderId) && courierRepository.close(courierId))
                 return new Response(true, "Success", null );
             else
                 return new Response(false, "Unsuccessful", null);
@@ -75,14 +75,15 @@ public class CourierService {
     }
 
     public Response rejectAssignment(int courierId, int orderId){
-        if(courierRepository.rejectAssignment(courierId, orderId) && courierRepository.statusUpdateWaitingCourier(orderId))
+        if(courierRepository.rejectAssignment(courierId, orderId) &&
+                courierRepository.statusUpdateWaitingCourier(orderId))
             return new Response(true, "Success", null );
         else
             return new Response(false, "Unsuccessful", null);
     }
 
     public Response finalizeOrder(int courierId, int orderId){
-        if(courierRepository.finalizeOrder(courierId, orderId))
+        if(courierRepository.finalizeOrder(courierId, orderId) && courierRepository.open(courierId))
             return new Response(true, "Success", null);
         else
             return new Response(false, "Unsuccessful", null);
@@ -95,5 +96,27 @@ public class CourierService {
         else
             return new Response(true, "No orders found", Collections.emptyList());
     }
+
+    public Response open(int courierId){
+        if (courierRepository.getCourierStatus(courierId))
+            return new Response(false, "Courier already open", null);
+        else
+            if(courierRepository.open(courierId))
+                return new Response(true,"Success", null);
+            else
+                return new Response(false,"Unsuccessful", null);
+    }
+
+    public Response close(int courierId){
+        if (!courierRepository.getCourierStatus(courierId))
+            return new Response(false, "Courier already close", null);
+        else
+        if(courierRepository.close(courierId))
+            return new Response(true,"Success", null);
+        else
+            return new Response(false,"Unsuccessful", null);
+    }
+
+
 
 }

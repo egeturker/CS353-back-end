@@ -218,4 +218,27 @@ public class CourierRepository {
         return jdbcTemplate.update(sql, params) == 1;
     }
 
+    public boolean open(int courierId) {
+        String sql = "UPDATE courier SET status = ? " +
+                "WHERE courier_id = ?";
+        Object[] params = {1, courierId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean close(int courierId) {
+        String sql = "UPDATE courier SET status = ? " +
+                "WHERE courier_id = ?";
+        Object[] params = {0, courierId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean getCourierStatus(int courierId){
+        String sql = "SELECT status from courier WHERE courier_id = ?";
+        Object[] params = {courierId};
+
+        return jdbcTemplate.queryForObject(sql, params, Boolean.class);
+    }
+
 }
