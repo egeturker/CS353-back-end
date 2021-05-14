@@ -124,6 +124,10 @@ public class CourierRepository {
         return orderDetailsForCourier;
     };
 
+    RowMapper<Integer> integerRowMapper = (rs, rowNum) ->{
+        return rs.getInt(1);
+    };
+
 
     public List<AllCourierData> getCourierData(int courierId){
 
@@ -282,7 +286,7 @@ public class CourierRepository {
                 " review WHERE order_id = ?";
         Object[] params = {orderId};
 
-        return jdbcTemplate.queryForObject(sql, params, Integer.class);
+        return jdbcTemplate.queryForObject(sql, params, integerRowMapper);
     }
 
 }
