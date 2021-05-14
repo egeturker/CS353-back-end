@@ -191,7 +191,7 @@ public class CourierRepository {
                 "INNER JOIN customer ON customer.customer_id = order.customer_id " +
                 "INNER JOIN user ON user.user_id = customer.customer_id " +
                 "INNER JOIN region ON region.region_id = customer.region_id " +
-                "WHERE courier_id = ? AND order.status = 'Delivering' ";
+                "WHERE courier_id = ? AND `order`.status = 'Delivering' AND assigned_to.decision = 'Accepted'  ";
         Object[] params = {courierId};
 
         return jdbcTemplate.query(sql, params, orderDetailsForCourierRowMapper );
@@ -219,7 +219,6 @@ public class CourierRepository {
                 "WHERE order_id = ? AND EXISTS " +
                 "(SELECT * FROM assigned_to WHERE courier_id = ? AND order_id = ? AND decision = 'Accepted')";
         Object[] params = {Timestamp.from(Instant.now()), orderId, courierId, orderId};
-
         return jdbcTemplate.update(sql, params) == 1;
     }
 

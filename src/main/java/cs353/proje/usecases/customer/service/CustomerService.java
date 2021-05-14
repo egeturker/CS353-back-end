@@ -186,4 +186,15 @@ public class CustomerService
         else
             return new Response(false, "No favorite restaurant found", null);
     }
+
+    public Response approveOrder(int order_id) {
+        boolean result = customerRepository.approveOrder(order_id);
+        if (result)
+            return new Response(true, "You have successfully approved the delivery.", null);
+        else
+            return new Response(false, "An error occurred while approving the delivery," +
+                    " please check again and try later.", null);
+
+
+    }
 }

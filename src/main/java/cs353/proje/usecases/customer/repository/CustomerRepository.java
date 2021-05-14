@@ -611,4 +611,11 @@ public class CustomerRepository
 
         return result;
     }
+
+    public boolean approveOrder(int order_id) {
+        String sql = "UPDATE `order` SET status = 'Delivered-Approved'" +
+                "WHERE order_id = ? ";
+        Object[] params = {order_id};
+        return jdbcTemplate.update(sql, params) == 1;
+    }
 }

@@ -132,4 +132,10 @@ public class CustomerController {
         return customerService.getFavorite(customer_id);
     }
 
+    @PostMapping("/approveOrder/order_id={order_id}")
+    public Response approveOrder(@PathVariable(value="order_id") int order_id)
+    {
+        return customerService.approveOrder(order_id);
+    }
+
 }
