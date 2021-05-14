@@ -126,7 +126,9 @@ public class CourierRepository {
 
     public boolean updateOperateRegions(int courierId, List<OperateRegion> regions){
 
-        int result, result2 = 0;
+        //If regions array is empty, result2 always becomes 0
+        //And if no deletion occurs, result also becomes 0
+        int result, result2 = 1;
         String sql = "DELETE FROM operates_in WHERE courier_id = ? ";
         Object[] params = {courierId};
         result = jdbcTemplate.update(sql, params);
@@ -142,7 +144,8 @@ public class CourierRepository {
 
     public List<AssignedOrder> getCurrentAssignments(int courierId){
         String sql = "SELECT * FROM assigned_to " +
-                "INNER JOIN order ON order.order_id = assigned_to.order_id WHERE courier_id = ?";
+                "INNER JOIN `order` ON `order`.order_id = assigned_to.order_id " +
+                "WHERE decision = 'Pending' AND courier_id = ?";
         Object[] params = {courierId};
 
         return jdbcTemplate.query(sql, params, assignedOrderRowMapper);
