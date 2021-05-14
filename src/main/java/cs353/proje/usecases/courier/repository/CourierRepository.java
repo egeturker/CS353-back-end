@@ -282,12 +282,7 @@ public class CourierRepository {
                 " review WHERE order_id = ?";
         Object[] params = {orderId};
 
-        int score;
-        if(jdbcTemplate.queryForObject(sql, params, Integer.class) != null)
-            score = jdbcTemplate.queryForObject(sql, params, Integer.class);
-        else
-            score = 0;
-        return score;
+        return jdbcTemplate.queryForObject(sql, params, Integer.class);
     }
 
 }
