@@ -166,6 +166,7 @@ public class CourierRepository {
         Object[] params = {Timestamp.from(Instant.now()), courierId, orderId};
 
         return jdbcTemplate.update(sql, params) == 1;
+
     }
 
     public boolean rejectAssignment(int courierId, int orderId){
@@ -199,6 +200,22 @@ public class CourierRepository {
         Object[] params = {courierId};
 
         return jdbcTemplate.query(sql, params, orderRowMapper);
+    }
+
+    public boolean statusUpdateDelivering(int orderId) {
+        String sql = "UPDATE `order` SET status = ? " +
+                "WHERE order_id = ? ";
+        Object[] params = {"Delivering", orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean statusUpdateWaitingCourier(int orderId) {
+        String sql = "UPDATE `order` SET status = ? " +
+                "WHERE order_id = ? ";
+        Object[] params = {"Waiting Courier", orderId};
+
+        return jdbcTemplate.update(sql, params) == 1;
     }
 
 }

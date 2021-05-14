@@ -60,14 +60,22 @@ public class CourierService {
     }
 
     public Response acceptAssignment(int courierId, int orderId){
-        if(courierRepository.acceptAssignment(courierId, orderId))
-            return new Response(true, "Success", null );
+        if(courierRepository.acceptAssignment(courierId, orderId)){
+            List<AssignedOrder> assignedOrders = courierRepository.getCurrentAssignments(courierId);
+            for (AssignedOrder assignedOrder : assignedOrders)
+                if (assignedOrder.getOrderId() != orderId)
+                    courierRepository.rejectAssignment(assignedOrder.getCourierId(), assignedOrder.getOrderId());
+            if(courierRepository.statusUpdateDelivering(orderId))
+                return new Response(true, "Success", null );
+            else
+                return new Response(false, "Unsuccessful", null);
+        }
         else
             return new Response(false, "Unsuccessful", null);
     }
 
     public Response rejectAssignment(int courierId, int orderId){
-        if(courierRepository.rejectAssignment(courierId, orderId))
+        if(courierRepository.rejectAssignment(courierId, orderId) && courierRepository.statusUpdateWaitingCourier(orderId))
             return new Response(true, "Success", null );
         else
             return new Response(false, "Unsuccessful", null);
