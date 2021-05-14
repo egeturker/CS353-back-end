@@ -93,7 +93,6 @@ public class RestaurantRepository {
         menu_item.setDescription(rs.getString("description"));
         menu_item.setBasePrice(rs.getDouble("base_price"));
         menu_item.setFoodCategory(rs.getString("food_category"));
-        menu_item.setDeleted(rs.getBoolean("deleted"));
 
         return menu_item;
     };
@@ -105,7 +104,6 @@ public class RestaurantRepository {
         ingredient.setIngredientName(rs.getString("ingredient_name"));
         ingredient.setDefaultIngredient(rs.getBoolean("default_ingredient"));
         ingredient.setAdditionalPrice(rs.getDouble("additional_price"));
-        ingredient.setDeleted(rs.getBoolean("deleted"));
 
         return ingredient;
     };
@@ -235,21 +233,21 @@ public class RestaurantRepository {
         Object[] params = {1, restaurantId, menuItemId};
 
         List<Ingredient> ingredients = new ArrayList<>();
-        return jdbcTemplate.update(sql, params) == 1 && updateIngredients(restaurantId, menuItemId, ingredients);
+        return updateIngredients(restaurantId, menuItemId, ingredients) && jdbcTemplate.update(sql, params) == 1;
     }
 
     public boolean updateIngredients(int restaurantId, int menuItemId, List<Ingredient> ingredients) {
         String sql_menu_item = "SELECT COUNT(*) " +
-                     "FROM menu_item " +
+                     "FROM undeleted_menu_item " +
                      "WHERE restaurant_id = ? AND menu_item_id = ? ";
         Object[] params_menu_item = {restaurantId, menuItemId};
         List<Integer> menu_item = jdbcTemplate.query(sql_menu_item, params_menu_item, integerRowMapper);
         int menu_item_exits = menu_item.get(0);
         if(menu_item_exits == 1) {
             //menu_item has an ingredient that is not given in this list (it is being deleted).
-            String sql_ingredients = "SELECT * FROM ingredient " +
-                                     "WHERE menu_item_id = ? AND deleted = ? ";
-            Object[] params_ingredients = {menuItemId, 0};
+            String sql_ingredients = "SELECT * FROM undeleted_ingredient " +
+                                     "WHERE menu_item_id = ?";
+            Object[] params_ingredients = {menuItemId};
             List<Ingredient> item_ingredients = jdbcTemplate.query(sql_ingredients, params_ingredients, ingredientRowMapper);
 
             //menu item's ingredients in the ingredient table

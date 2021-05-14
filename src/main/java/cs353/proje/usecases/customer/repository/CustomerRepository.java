@@ -272,10 +272,10 @@ public class CustomerRepository
                 "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
                 "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
-                "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN undeleted_menu_item ON undeleted_menu_item.restaurant_id = restaurant.restaurant_id " +
                 "WHERE (customer.customer_id = ?) " +
                 "AND (courier.status = 1)" +
-                "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
+                "AND ((restaurant_name LIKE ?) OR (undeleted_menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
                 "AND restaurant.restaurant_id IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
@@ -302,10 +302,10 @@ public class CustomerRepository
                 "INNER JOIN customer ON customer.region_id= serves_at.region_id " +
                 "INNER JOIN operates_in ON operates_in.region_id = serves_at.region_id " +
                 "INNER JOIN courier ON courier.courier_id = operates_in.courier_id " +
-                "INNER JOIN menu_item ON menu_item.restaurant_id = restaurant.restaurant_id " +
+                "INNER JOIN undeleted_menu_item ON undeleted_menu_item.restaurant_id = restaurant.restaurant_id " +
                 "WHERE (customer.customer_id = ?) " +
                 "AND (courier.status = 1)" +
-                "AND ((restaurant_name LIKE ?) OR (menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
+                "AND ((restaurant_name LIKE ?) OR (undeleted_menu_item.name LIKE ?) OR (restaurant_category LIKE ?))" +
                 "AND restaurant.restaurant_id NOT IN " +
                 "(SELECT restaurant.restaurant_id FROM restaurant " +
                 "INNER JOIN favorite ON favorite.restaurant_id = restaurant.restaurant_id " +
@@ -383,8 +383,8 @@ public class CustomerRepository
 
     public List<MenuItem> getRestaurantMenu(int restaurant_id)
     {
-        String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
-                     "WHERE menu_item.restaurant_id = ? " +
+        String sql = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
+                     "WHERE undeleted_menu_item.restaurant_id = ? " +
                      "ORDER BY food_category";
         Object[] params = {restaurant_id};
         return jdbcTemplate.query(sql, params, menuItemRowMapper);
@@ -392,16 +392,16 @@ public class CustomerRepository
 
     public List<MenuItem> getRestaurantMenu(int restaurant_id, String food_category)
     {
-        String sql = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
-                     "WHERE menu_item.restaurant_id = ? AND menu_item.food_category = ? ";
+        String sql = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
+                     "WHERE undeleted_menu_item.restaurant_id = ? AND undeleted_menu_item.food_category = ? ";
         Object[] params = {restaurant_id, food_category};
         return jdbcTemplate.query(sql, params, menuItemRowMapper);
     }
 
     public List<CategoryMenu> getRestaurantMenuByCategory(int restaurant_id)
     {
-        String sql_category = "SELECT * FROM menu_item INNER JOIN restaurant ON restaurant.restaurant_id = menu_item.restaurant_id " +
-                              "WHERE menu_item.restaurant_id = ? " +
+        String sql_category = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
+                              "WHERE undeleted_menu_item.restaurant_id = ? " +
                               "GROUP BY food_category";
         Object[] params = {restaurant_id};
         List<MenuItem> menu = jdbcTemplate.query(sql_category, params, menuItemRowMapper);
@@ -424,7 +424,7 @@ public class CustomerRepository
 
     public List<Ingredient> getIngredients(int menu_item_id)
     {
-        String sql = "SELECT * FROM ingredient " +
+        String sql = "SELECT * FROM undeleted_ingredient " +
                      "WHERE menu_item_id = ?";
         Object[] params = {menu_item_id};
         return jdbcTemplate.query(sql, params, ingredientRowMapper);

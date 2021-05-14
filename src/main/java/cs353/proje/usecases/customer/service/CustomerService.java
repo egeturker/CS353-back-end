@@ -119,7 +119,7 @@ public class CustomerService
         if(menu.size() >= 1)
             return new Response(true, "Success", menu);
         else
-            return new Response(false, "No menu found", null);
+            return new Response(true, "No menu found", Collections.emptyList());
     }
 
     public Response getRestaurantMenuByCategory(int restaurant_id)
@@ -128,7 +128,7 @@ public class CustomerService
         if(menu.size() >= 1)
             return new Response(true, "Success", menu);
         else
-            return new Response(false, "No menu found", null);
+            return new Response(true, "No menu found", Collections.emptyList());
     }
 
     public Response getIngredients(int menu_item_id)
