@@ -81,7 +81,7 @@ public class RestaurantRepository {
         order.setPaymentMethod(rs.getString("payment_method"));
         order.setCoupon(rs.getString("coupon"));
         order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
-        order.setCustomerNameSurname(customerRepository.getCustomerData(order.getCustomerId()).getName() + customerRepository.getCustomerData(order.getCustomerId()).getSurname() );
+        order.setCustomerNameSurname(customerRepository.getCustomerData(order.getCustomerId()).getName() + " " + customerRepository.getCustomerData(order.getCustomerId()).getSurname() );
 
         return order;
     };
