@@ -65,7 +65,7 @@ public class CourierService {
             List<OrderDetailsForCourier> orderDetailsForCouriers = courierRepository.getCurrentAssignments(courierId);
             for (OrderDetailsForCourier orderDetailsForCourier : orderDetailsForCouriers)
                 if (orderDetailsForCourier.getOrder().getOrderId() != orderId)
-                    courierRepository.rejectAssignment(courierId, orderId);
+                    courierRepository.rejectAssignment(courierId, orderDetailsForCourier.getOrder().getOrderId());
             if(courierRepository.statusUpdateDelivering(orderId) && courierRepository.close(courierId))
                 return new Response(true, "Success", null );
             else
