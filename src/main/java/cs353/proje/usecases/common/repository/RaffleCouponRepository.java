@@ -137,9 +137,10 @@ public class RaffleCouponRepository {
         String sql = "UPDATE raffle SET winner = ? WHERE raffle_id = ?";
         Object[] params = {winner, raffleId};
 
-        if(jdbcTemplate.update(sql, params) == 1)
+        if(jdbcTemplate.update(sql, params) == 1){
+            assignWinnerCoupon(raffleId, winner, restaurantId);
             return winner;
-        else
+        }else
             return -1;
     }
 
@@ -154,6 +155,42 @@ public class RaffleCouponRepository {
         String sql = "SELECT COUNT(*) FROM raffle " +
                 "WHERE raffle_id = ? AND restaurant_id = ? AND ending_date < ? AND winner IS NULL";
         Object[] params = {raffleId, restaurantId, Date.from(Instant.now())};
+
+        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
+    }
+
+    public boolean assignWinnerCoupon(int raffleId, int winnerId, int restaurantId){
+        String sql = "SELECT coupon_prize FROM raffle WHERE raffle_id = ?";
+        Object[] params = {raffleId};
+
+        double discountAmount = jdbcTemplate.queryForObject(sql, params, Double.class);
+
+        String coupon = generateRandomString(16);
+        while(couponExists(coupon)){
+            coupon = generateRandomString(16);
+        }
+
+        sql = "INSERT INTO coupon VALUES (?,?,?,?,?) ";
+        Object[] params2 = {coupon, discountAmount, winnerId, 0, restaurantId};
+        return jdbcTemplate.update(sql, params2) == 1;
+    }
+
+    public String generateRandomString(int length){
+        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder randomString = new StringBuilder();
+        Random random = new Random();
+
+        while(randomString.length() < length){
+            int i = (int) (random.nextFloat() * alphanumeric.length());
+            randomString.append(alphanumeric.charAt(i));
+        }
+
+        return randomString.toString();
+    }
+
+    public boolean couponExists(String coupon){
+        String sql = "SELECT COUNT(*) FROM coupon WHERE coupon_id = ?";
+        Object[] params = {coupon};
 
         return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
