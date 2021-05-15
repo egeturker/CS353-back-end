@@ -104,13 +104,13 @@ public class ReviewRepository {
         Object[] params = {orderId};
         int numberOfOldOrders  = jdbcTemplate.queryForObject(sql, params, Integer.class);
 
-        sql = "SELECT rating FROM `order` " +
+        sql = "SELECT DISTINCT rating FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
                 "WHERE restaurant.restaurant_id IN  " +
                 "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
         double oldRating  = jdbcTemplate.queryForObject(sql, params, Double.class);
 
-        sql = "SELECT restaurant.restaurant_id FROM `order` " +
+        sql = "SELECT DISTINCT restaurant.restaurant_id FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
                 "WHERE restaurant.restaurant_id IN  " +
                 "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
@@ -129,22 +129,22 @@ public class ReviewRepository {
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
                 "WHERE courier.courier_id IN  " +
                 "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
-                "AND decision = 1";
+                "AND decision = 'Accepted'";
         Object[] params = {orderId};
         int numberOfOldOrders = jdbcTemplate.queryForObject(sql, params, Integer.class);
 
-        sql = "SELECT rating FROM assigned_to " +
+        sql = "SELECT DISTINCT rating FROM assigned_to " +
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
                 "WHERE courier.courier_id IN  " +
                 "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
-                "AND decision = 1";
+                "AND decision = 'Accepted'";
         double oldRating = jdbcTemplate.queryForObject(sql, params, Double.class);
 
-        sql = "SELECT assigned_to.courier_id FROM assigned_to " +
+        sql = "SELECT DISTINCT assigned_to.courier_id FROM assigned_to " +
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
                 "WHERE courier.courier_id IN  " +
                 "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
-                "AND decision = 1";
+                "AND decision = 'Accepted'";
         int courierId= jdbcTemplate.queryForObject(sql, params, Integer.class);
 
         double newRating = (oldRating * numberOfOldOrders + score) / (numberOfOldOrders + 1);
