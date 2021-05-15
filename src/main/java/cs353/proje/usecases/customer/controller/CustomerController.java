@@ -5,12 +5,14 @@ import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.customer.dto.Customer;
 import cs353.proje.usecases.customer.dto.OrderFromCustomer;
 import cs353.proje.usecases.customer.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("CustomerController")
-@RequestMapping("/customer")
+//@RequestMapping("/customer")
 @CrossOrigin
+@RequiredArgsConstructor
 public class CustomerController {
 
     @Autowired
