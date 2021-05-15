@@ -97,40 +97,60 @@ public class ReviewRepository {
     }
 
     public boolean updateRestaurantRating(int score, int orderId){
-        String sql = "SELECT COUNT(*), restaurant.restaurant_id, rating FROM `order` " +
+        String sql = "SELECT COUNT(*) FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
                 "WHERE restaurant.restaurant_id IN  " +
                 "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
-
         Object[] params = {orderId};
+        int numberOfOldOrders  = jdbcTemplate.queryForObject(sql, params, Integer.class);
 
-        List<Double> sqlData  = jdbcTemplate.queryForList(sql, params,Double.class);
+        sql = "SELECT rating FROM `order` " +
+                "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
+                "WHERE restaurant.restaurant_id IN  " +
+                "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
+        double oldRating  = jdbcTemplate.queryForObject(sql, params, Double.class);
 
-        //(Old rating * number of old orders + review score) / (number of old orders + 1)
-        double newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+        sql = "SELECT restaurant.restaurant_id FROM `order` " +
+                "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
+                "WHERE restaurant.restaurant_id IN  " +
+                "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
+        int restaurantId = jdbcTemplate.queryForObject(sql, params, Integer.class);
+
+        double newRating = (oldRating * numberOfOldOrders + score) / (numberOfOldOrders + 1);
 
         sql = "UPDATE restaurant SET rating = ? WHERE restaurant_id = ?";
-        Object[] params2 = {newRating, sqlData.get(1)};
+        Object[] params2 = {newRating, restaurantId};
 
         return(jdbcTemplate.update(sql, params2) > 0);
     }
 
     public boolean updateCourierRating(int score, int orderId){
-        String sql = "SELECT COUNT(*), assigned_to.courier_id, rating FROM assigned_to " +
+        String sql = "SELECT COUNT(*) FROM assigned_to " +
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
                 "WHERE courier.courier_id IN  " +
                 "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
                 "AND decision = 1";
-
         Object[] params = {orderId};
+        int numberOfOldOrders = jdbcTemplate.queryForObject(sql, params, Integer.class);
 
-        List<Double> sqlData  = jdbcTemplate.queryForList(sql, params,Double.class);
+        sql = "SELECT rating FROM assigned_to " +
+                "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
+                "WHERE courier.courier_id IN  " +
+                "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
+                "AND decision = 1";
+        double oldRating = jdbcTemplate.queryForObject(sql, params, Double.class);
 
-        //(Old rating * number of old orders + review score) / (number of old orders + 1)
-        double newRating = (sqlData.get(0) * sqlData.get(2) + score) / (sqlData.get(2) + 1);
+        sql = "SELECT assigned_to.courier_id FROM assigned_to " +
+                "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
+                "WHERE courier.courier_id IN  " +
+                "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
+                "AND decision = 1";
+        int courierId= jdbcTemplate.queryForObject(sql, params, Integer.class);
+
+        double newRating = (oldRating * numberOfOldOrders + score) / (numberOfOldOrders + 1);
 
         sql = "UPDATE courier SET rating = ? WHERE courier_id = ?";
-        Object[] params2 = {newRating, sqlData.get(1)};
+        Object[] params2 = {newRating, courierId};
 
         return(jdbcTemplate.update(sql, params2) > 0);
     }
