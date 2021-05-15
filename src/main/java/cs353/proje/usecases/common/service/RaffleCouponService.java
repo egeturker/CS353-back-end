@@ -4,6 +4,8 @@ import cs353.proje.usecases.common.dto.Coupon;
 import cs353.proje.usecases.common.dto.Raffle;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.common.repository.RaffleCouponRepository;
+import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class RaffleCouponService {
 
     @Autowired
     RaffleCouponRepository raffleCouponRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
     public Response getCoupons(int customerId) {
         List<Coupon> coupons = raffleCouponRepository.getCoupons(customerId);
@@ -70,10 +74,20 @@ public class RaffleCouponService {
 
     public Response finishRaffle(int restaurantId, int raffleId){
         int winner = raffleCouponRepository.finishRaffle(restaurantId, raffleId);
-        if(winner > 0)
-            return new Response(true,"Success", winner);
+        if(winner > 0) {
+            Customer winnerData = customerRepository.getCustomerData(winner);
+            String winnerNameSurname = winnerData.getName() + " " + winnerData.getSurname();
+            return new Response(true, "Success", winnerNameSurname);
+        }
         else
             return new Response(false,"Unsuccessful", null);
     }
 
+    public Response getUnfinishedRaffle(int restaurant_id) {
+        List<Raffle> raffles = raffleCouponRepository.getUnfinishedRaffle(restaurant_id);
+        if(raffles.size() >= 1)
+            return new Response(true, "Success", raffles.get(0));
+        else
+            return new Response(true,"No ongoing raffles found for the restaurant", null);
+    }
 }

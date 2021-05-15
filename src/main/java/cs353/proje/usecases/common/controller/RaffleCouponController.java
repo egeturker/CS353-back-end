@@ -39,6 +39,13 @@ public class RaffleCouponController {
         return raffleCouponService.getRaffle(restaurant_id);
     }
 
+    @GetMapping("/getUnfinishedRaffle/restaurant_id={id}")
+    public Response getUnfinishedRaffle(@PathVariable(value="id") int restaurant_id)
+    {
+
+        return raffleCouponService.getUnfinishedRaffle(restaurant_id);
+    }
+
     //If there is an ongoing raffle for the given restaurant,
     //return the amount of entries this customer have in the raffle
     //If there is no raffle, return (data = 0) with (success = true)
