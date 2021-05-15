@@ -86,7 +86,7 @@ public class RaffleCouponRepository {
 
     public List<Raffle> getUnfinishedRaffle(int restaurantId){
         String sql = "SELECT * FROM raffle WHERE restaurant_id = ?" +
-                " AND (ending_date >= ? AND starting_date <= ?) OR (winner IS NULL)";
+                " AND ((ending_date >= ? AND starting_date <= ?) OR (winner IS NULL))";
         Object[] params = {restaurantId, Timestamp.from(Instant.now()),Timestamp.from(Instant.now())};
         return  jdbcTemplate.query(sql, params, raffleRowMapper);
 

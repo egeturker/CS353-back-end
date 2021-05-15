@@ -8,6 +8,7 @@ import cs353.proje.usecases.customer.dto.Restaurant;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import cs353.proje.usecases.loginregister.dto.User;
 import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
+import cs353.proje.usecases.restaurant.dto.OrderWithCustomerName;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
 import cs353.proje.usecases.common.repository.RaffleCouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,8 @@ public class RestaurantRepository {
         return region;
     };
 
-    RowMapper<Order> orderRowMapper = (rs, rowNum) ->{
-        Order order = new Order();
+    RowMapper<OrderWithCustomerName> orderRowMapper = (rs, rowNum) ->{
+        OrderWithCustomerName order = new OrderWithCustomerName();
         order.setOrderId(rs.getInt("order_id"));
         order.setRestaurantId(rs.getInt("restaurant_id"));
         order.setCustomerId(rs.getInt("customer_id"));
@@ -80,6 +81,7 @@ public class RestaurantRepository {
         order.setPaymentMethod(rs.getString("payment_method"));
         order.setCoupon(rs.getString("coupon"));
         order.setRestaurantName(customerRepository.getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
+        order.setCustomerNameSurname(customerRepository.getCustomerData(order.getCustomerId()).getName() + customerRepository.getCustomerData(order.getCustomerId()).getSurname() );
 
         return order;
     };
@@ -184,7 +186,7 @@ public class RestaurantRepository {
             return -1;
     }
 
-    public List<Order> getFinalizedOrders(int restaurantId) {
+    public List<OrderWithCustomerName> getFinalizedOrders(int restaurantId) {
         String sql = "SELECT * FROM `order` " +
                      "WHERE restaurant_id = ? AND (status NOT IN ('Order Taken', 'Preparing Food'))";
         Object[] params = {restaurantId};
@@ -194,7 +196,7 @@ public class RestaurantRepository {
     }
 
 
-    public List<Order> getActiveOrders(int restaurantId) {
+    public List<OrderWithCustomerName> getActiveOrders(int restaurantId) {
         String sql = "SELECT * FROM `order` " +
                 "WHERE restaurant_id = ? AND (status IN ('Order Taken', 'Preparing Food'))";
         Object[] params = {restaurantId};

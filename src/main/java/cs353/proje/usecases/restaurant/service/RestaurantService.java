@@ -5,6 +5,7 @@ import cs353.proje.usecases.common.dto.MenuItem;
 import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.restaurant.dto.AllRestaurantData;
+import cs353.proje.usecases.restaurant.dto.OrderWithCustomerName;
 import cs353.proje.usecases.restaurant.dto.UpdatedRestaurantData;
 import cs353.proje.usecases.restaurant.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,12 @@ public class RestaurantService {
     }
 
     public Response getFinalizedOrders(int restaurantId){
-        List<Order> orders = restaurantRepository.getFinalizedOrders(restaurantId);
+        List<OrderWithCustomerName> orders = restaurantRepository.getFinalizedOrders(restaurantId);
         return new Response(true, "Success", orders);
     }
 
     public Response getActiveOrders(int restaurantId){
-        List<Order> orders = restaurantRepository.getActiveOrders(restaurantId);
+        List<OrderWithCustomerName> orders = restaurantRepository.getActiveOrders(restaurantId);
         return new Response(true, "Success", orders);
     }
 
