@@ -36,8 +36,13 @@ public class RestaurantService {
             return new Response(true, "Restaurant not found", Collections.emptyList());
     }
 
-    public Response getOldOrders(int restaurantId){
-        List<Order> orders = restaurantRepository.getOldOrders(restaurantId);
+    public Response getFinalizedOrders(int restaurantId){
+        List<Order> orders = restaurantRepository.getFinalizedOrders(restaurantId);
+        return new Response(true, "Success", orders);
+    }
+
+    public Response getActiveOrders(int restaurantId){
+        List<Order> orders = restaurantRepository.getActiveOrders(restaurantId);
         return new Response(true, "Success", orders);
     }
 

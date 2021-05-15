@@ -184,9 +184,19 @@ public class RestaurantRepository {
             return -1;
     }
 
-    public List<Order> getOldOrders(int restaurantId) {
+    public List<Order> getFinalizedOrders(int restaurantId) {
         String sql = "SELECT * FROM `order` " +
-                     "WHERE restaurant_id = ?";
+                     "WHERE restaurant_id = ? AND (status IN ('Order Taken', 'Preparing Food'))";
+        Object[] params = {restaurantId};
+
+        return jdbcTemplate.query(sql, params, orderRowMapper);
+
+    }
+
+
+    public List<Order> getActiveOrders(int restaurantId) {
+        String sql = "SELECT * FROM `order` " +
+                "WHERE restaurant_id = ? AND (status NOT IN ('Order Taken', 'Preparing Food'))";
         Object[] params = {restaurantId};
 
         return jdbcTemplate.query(sql, params, orderRowMapper);

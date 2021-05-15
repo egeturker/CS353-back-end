@@ -35,12 +35,16 @@ public class RestaurantController {
         return restaurantService.updateRestaurantData(restaurant_id, updatedRestaurantData);
     }
 
-    //Returns the orders taken from this restaurant starting from the newest.
-    //If there are no orders, return (success = true) and (data = empty list)
-    @GetMapping("/orders/restaurant_id={id}")
-    public Response getOldOrders(@PathVariable(value="id") int restaurant_id)
+    @GetMapping("/finalizedOrders/restaurant_id={id}")
+    public Response getFinalizedOrders(@PathVariable(value="id") int restaurant_id)
     {
-        return restaurantService.getOldOrders(restaurant_id);
+        return restaurantService.getFinalizedOrders(restaurant_id);
+    }
+
+    @GetMapping("/activeOrders/restaurant_id={id}")
+    public Response getActiveOrders(@PathVariable(value="id") int restaurant_id)
+    {
+        return restaurantService.getActiveOrders(restaurant_id);
     }
 
     @GetMapping("/getRestaurantId/owner_id={id}")
