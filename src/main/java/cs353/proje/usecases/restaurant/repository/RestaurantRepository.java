@@ -186,7 +186,7 @@ public class RestaurantRepository {
 
     public List<Order> getFinalizedOrders(int restaurantId) {
         String sql = "SELECT * FROM `order` " +
-                     "WHERE restaurant_id = ? AND (status IN ('Order Taken', 'Preparing Food'))";
+                     "WHERE restaurant_id = ? AND (status NOT IN ('Order Taken', 'Preparing Food'))";
         Object[] params = {restaurantId};
 
         return jdbcTemplate.query(sql, params, orderRowMapper);
@@ -196,7 +196,7 @@ public class RestaurantRepository {
 
     public List<Order> getActiveOrders(int restaurantId) {
         String sql = "SELECT * FROM `order` " +
-                "WHERE restaurant_id = ? AND (status NOT IN ('Order Taken', 'Preparing Food'))";
+                "WHERE restaurant_id = ? AND (status IN ('Order Taken', 'Preparing Food'))";
         Object[] params = {restaurantId};
 
         return jdbcTemplate.query(sql, params, orderRowMapper);
