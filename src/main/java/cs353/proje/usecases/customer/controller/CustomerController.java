@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("CustomerController")
-//@RequestMapping("/customer")
+@RequestMapping("/customer")
 @CrossOrigin
 @RequiredArgsConstructor
 public class CustomerController {
