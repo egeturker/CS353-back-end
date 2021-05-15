@@ -5,6 +5,8 @@ import cs353.proje.usecases.common.dto.Order;
 import cs353.proje.usecases.courier.dto.AllCourierData;
 import cs353.proje.usecases.courier.dto.OperateRegion;
 import cs353.proje.usecases.courier.dto.OrderDetailsForCourier;
+import cs353.proje.usecases.customer.dto.Customer;
+import cs353.proje.usecases.customer.dto.OrderDetails;
 import cs353.proje.usecases.customer.repository.CustomerRepository;
 import cs353.proje.usecases.loginregister.dto.Courier;
 import cs353.proje.usecases.loginregister.dto.User;
@@ -202,7 +204,23 @@ public class CourierRepository {
                 "WHERE courier_id = ? AND order_id = ?";
         Object[] params = {Timestamp.from(Instant.now()), courierId, orderId};
 
-        return jdbcTemplate.update(sql, params) == 1;
+        boolean result1 = jdbcTemplate.update(sql, params) == 1;
+
+        OrderDetails orderDetails = customerRepository.getOrderDetails(orderId);
+        Customer customer = customerRepository.getCustomerData(orderDetails.getOrder().getCustomerId());
+
+        String sql2 = "SELECT fee FROM operates_in" +
+                "WHERE courier_id = ? AND region_id = ? ";
+        Object[] params2 = {courierId, customer.getRegion_id()};
+        double fee = jdbcTemplate.queryForObject(sql2, params2, Double.class);
+
+        String sql3 = "UPDATE `order` SET delivery_fee = ?, " +
+                "WHERE order_id = ?";
+        Object[] params3 = {fee, orderId};
+
+        boolean result2 = jdbcTemplate.update(sql3, params3) == 1;
+
+        return result1 && result2;
 
     }
 

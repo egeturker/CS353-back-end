@@ -102,6 +102,7 @@ public class CustomerRepository
         order.setPaymentMethod(rs.getString("payment_method"));
         order.setCoupon(rs.getString("coupon"));
         order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
+        order.setDeliveryFee(rs.getDouble("delivery_fee"));
         //no such column in order
         return order;
     };
