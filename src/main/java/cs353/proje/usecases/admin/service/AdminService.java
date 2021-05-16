@@ -27,4 +27,15 @@ public class AdminService {
         reportResults.setColumnNames(columnNames);
         return new Response(true, "Successfully generated the report.", reportResults);
     }
+
+    public Response raffleStatisticsReport()
+    {
+        ReportResults reportResults = new ReportResults();
+        List<String> columnNames = Arrays.asList("Raffle Id", "Max Entries", "Total Entries", "Total Participants", "Winner Entries");
+        List<List<String>> rows = adminRepository.raffleStatisticsReport();
+
+        reportResults.setRows(rows);
+        reportResults.setColumnNames(columnNames);
+        return new Response(true, "Successfully generated the report.", reportResults);
+    }
 }

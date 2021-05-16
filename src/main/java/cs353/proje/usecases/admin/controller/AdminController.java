@@ -20,4 +20,10 @@ public class AdminController {
         return adminService.paymentMethodReport();
     }
 
+    @GetMapping("/raffleStatisticsReport")
+    public Response raffleStatisticsReport()
+    {
+        return adminService.raffleStatisticsReport();
+    }
+
 }
