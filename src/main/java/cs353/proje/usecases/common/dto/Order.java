@@ -22,6 +22,8 @@ public class Order {
     private String paymentMethod;
     private String restaurantName;
     private String coupon;
-    private Double deliveryFee;
 
+    private Double deliveryFee;
+    private String courierNameSurname;
+    private String courierImage;
 }

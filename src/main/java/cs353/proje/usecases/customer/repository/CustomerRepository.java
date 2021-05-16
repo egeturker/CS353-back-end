@@ -3,6 +3,8 @@ package cs353.proje.usecases.customer.repository;
 import cs353.proje.usecases.common.dto.*;
 import cs353.proje.usecases.customer.dto.*;
 import cs353.proje.usecases.common.repository.RaffleCouponRepository;
+import cs353.proje.usecases.loginregister.dto.Courier;
+import cs353.proje.usecases.loginregister.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +27,10 @@ public class CustomerRepository
     RaffleCouponRepository raffleCouponRepository;
 
     RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt(1);
+
+    RowMapper<Boolean> booleanRowMapper = (rs, rowNum) ->{
+        return rs.getBoolean("status");
+    };
 
     RowMapper<Restaurant> restaurantRowMapper = (rs, rowNum) ->{
         Restaurant restaurant = new Restaurant();
@@ -89,6 +95,22 @@ public class CustomerRepository
         return customer;
     };
 
+    RowMapper<User> userRowMapper = (rs, rowNum) ->{
+        User user = new User();
+        user.setUserId(rs.getInt("user_id"));
+        user.setEmail(rs.getString("email"));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+        user.setTelephone(rs.getString("telephone"));
+        user.setImage(rs.getString("image"));
+        user.setRegistrationDate(rs.getDate("registration_date"));
+        user.setName(rs.getString("name"));
+        user.setSurname(rs.getString("surname"));
+        user.setUserType(rs.getString("user_type"));
+
+        return user;
+    };
+
     RowMapper<Order> orderRowMapper = (rs, rowNum) ->{
         Order order = new Order();
         order.setOrderId(rs.getInt("order_id"));
@@ -102,8 +124,18 @@ public class CustomerRepository
         order.setPaymentMethod(rs.getString("payment_method"));
         order.setCoupon(rs.getString("coupon"));
         order.setRestaurantName(getRestaurantInfo(order.getRestaurantId()).getRestaurantName());
+
         order.setDeliveryFee(rs.getDouble("delivery_fee"));
-        //no such column in order
+        User courierInfo = getCourierOfOrder(order.getOrderId());
+        if (courierInfo == null)
+        {
+            order.setCourierNameSurname(null);
+            order.setCourierImage(null);
+        } else {
+            order.setCourierNameSurname(courierInfo.getName() + " " + courierInfo.getSurname());
+            order.setCourierImage(courierInfo.getImage());
+        }
+
         return order;
     };
 
@@ -124,10 +156,6 @@ public class CustomerRepository
         favorite.setRestaurantId(rs.getInt("restaurant_id"));
 
         return favorite;
-    };
-
-    RowMapper<Boolean> booleanRowMapper = (rs, rowNum) ->{
-        return rs.getBoolean("status");
     };
 
     public List<Restaurant> getAllRestaurants()
@@ -225,7 +253,7 @@ public class CustomerRepository
     }
 
     public List<Restaurant> getNonFavoriteRestaurantsWithFilter(int customer_id, boolean open,
-                                                             double minRating, double maxRating)
+                                                                double minRating, double maxRating)
     {
         String sql = "SELECT restaurant.restaurant_id, owner_id, restaurant_name,  restaurant.rating, restaurant.address, " +
                 " description, restaurant_category, restaurant.status, image " +
@@ -353,9 +381,9 @@ public class CustomerRepository
                 "WHERE customer_id = ?;";
 
         Object[] params = {customerData.getEmail(), customerData.getUsername(), customerData.getPassword(),
-            customerData.getTelephone(), customerData.getImage(), customerData.getRegistrationDate(),
-            customerData.getName(), customerData.getSurname(), customerData.getUserType(),
-            customerData.getAddress(), customerData.getRegion_id(), userId };
+                customerData.getTelephone(), customerData.getImage(), customerData.getRegistrationDate(),
+                customerData.getName(), customerData.getSurname(), customerData.getUserType(),
+                customerData.getAddress(), customerData.getRegion_id(), userId };
 
         return jdbcTemplate.update(sql,params) == 2;
     }
@@ -375,8 +403,8 @@ public class CustomerRepository
     public Restaurant getRestaurantInfo(int restaurant_id)
     {
         String sql = "SELECT * " +
-                     "FROM restaurant " +
-                     "WHERE restaurant_id = ? ";
+                "FROM restaurant " +
+                "WHERE restaurant_id = ? ";
         Object[] params = {restaurant_id};
         List<Restaurant> restaurant = jdbcTemplate.query(sql, params, restaurantRowMapper);
 
@@ -389,8 +417,8 @@ public class CustomerRepository
     public List<MenuItem> getRestaurantMenu(int restaurant_id)
     {
         String sql = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
-                     "WHERE undeleted_menu_item.restaurant_id = ? " +
-                     "ORDER BY food_category";
+                "WHERE undeleted_menu_item.restaurant_id = ? " +
+                "ORDER BY food_category";
         Object[] params = {restaurant_id};
         return jdbcTemplate.query(sql, params, menuItemRowMapper);
     }
@@ -398,7 +426,7 @@ public class CustomerRepository
     public List<MenuItem> getRestaurantMenu(int restaurant_id, String food_category)
     {
         String sql = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
-                     "WHERE undeleted_menu_item.restaurant_id = ? AND undeleted_menu_item.food_category = ? ";
+                "WHERE undeleted_menu_item.restaurant_id = ? AND undeleted_menu_item.food_category = ? ";
         Object[] params = {restaurant_id, food_category};
         return jdbcTemplate.query(sql, params, menuItemRowMapper);
     }
@@ -406,8 +434,8 @@ public class CustomerRepository
     public List<CategoryMenu> getRestaurantMenuByCategory(int restaurant_id)
     {
         String sql_category = "SELECT * FROM undeleted_menu_item INNER JOIN restaurant ON restaurant.restaurant_id = undeleted_menu_item.restaurant_id " +
-                              "WHERE undeleted_menu_item.restaurant_id = ? " +
-                              "GROUP BY food_category";
+                "WHERE undeleted_menu_item.restaurant_id = ? " +
+                "GROUP BY food_category";
         Object[] params = {restaurant_id};
         List<MenuItem> menu = jdbcTemplate.query(sql_category, params, menuItemRowMapper);
 
@@ -415,7 +443,7 @@ public class CustomerRepository
         CategoryMenu category_item = new CategoryMenu();
         String food_category;
 
-       for (int i = 0; i < menu.size(); i++) {
+        for (int i = 0; i < menu.size(); i++) {
             food_category = menu.get(i).getFoodCategory();
             category_item.setCategoryMenuItems(getRestaurantMenu(restaurant_id, food_category));
             category_item.setCategory(food_category);
@@ -430,7 +458,7 @@ public class CustomerRepository
     public List<Ingredient> getIngredients(int menu_item_id)
     {
         String sql = "SELECT * FROM undeleted_ingredient " +
-                     "WHERE menu_item_id = ?";
+                "WHERE menu_item_id = ?";
         Object[] params = {menu_item_id};
         return jdbcTemplate.query(sql, params, ingredientRowMapper);
     }
@@ -506,7 +534,7 @@ public class CustomerRepository
     public OrderDetails getOrderDetails(int order_id)
     {
         String sql = "SELECT * FROM `order` " +
-                     "WHERE order_id = ? ";
+                "WHERE order_id = ? ";
         Object[] params = {order_id};
         List<Order> order = jdbcTemplate.query(sql, params, orderRowMapper);
 
@@ -525,8 +553,8 @@ public class CustomerRepository
     private List<SelectedMenuItem> getSelectedMenuItems(int order_id)
     {
         String sql = "SELECT * FROM selected_menu_item INNER JOIN menu_item " +
-                     "ON selected_menu_item.menu_item_id = menu_item.menu_item_id  " +
-                     "WHERE selected_menu_item.order_id = ? ";
+                "ON selected_menu_item.menu_item_id = menu_item.menu_item_id  " +
+                "WHERE selected_menu_item.order_id = ? ";
         Object[] params = {order_id};
         List<SelectedMenuItem> selected_menu_items = jdbcTemplate.query(sql, params, selectedMenuItemRowMapper);
 
@@ -540,8 +568,8 @@ public class CustomerRepository
     private List<Ingredient> getSelectedIngredients(int order_id, int menu_item_id)
     {
         String sql = "SELECT * FROM selected_ingredient INNER JOIN ingredient " +
-                     "ON selected_ingredient.ingredient_id = ingredient.ingredient_id  " +
-                     "WHERE selected_ingredient.order_id = ? AND selected_ingredient.menu_item_id = ?";
+                "ON selected_ingredient.ingredient_id = ingredient.ingredient_id  " +
+                "WHERE selected_ingredient.order_id = ? AND selected_ingredient.menu_item_id = ?";
         Object[] params = {order_id, menu_item_id};
         return jdbcTemplate.query(sql, params, ingredientRowMapper);
     }
@@ -549,7 +577,7 @@ public class CustomerRepository
     public boolean addFavorite(int customer_id, int restaurant_id)
     {
         String sql = "INSERT INTO favorite " +
-                     "VALUES (?, ?) ";
+                "VALUES (?, ?) ";
         Object[] params = {customer_id, restaurant_id};
         return jdbcTemplate.update(sql, params) == 1;
     }
@@ -557,7 +585,7 @@ public class CustomerRepository
     public boolean removeFavorite(int customer_id, int restaurant_id)
     {
         String sql = "DELETE FROM favorite " +
-                     "WHERE customer_id = ? AND restaurant_id = ? ";
+                "WHERE customer_id = ? AND restaurant_id = ? ";
         Object[] params = {customer_id, restaurant_id};
         return jdbcTemplate.update(sql, params) == 1;
     }
@@ -565,7 +593,7 @@ public class CustomerRepository
     public List<Favorite> getFavorite(int customer_id)
     {
         String sql = "SELECT * FROM favorite " +
-                     "WHERE customer_id = ? ";
+                "WHERE customer_id = ? ";
         Object[] params = {customer_id};
         return jdbcTemplate.query(sql, params, favoriteRowMapper);
     }
@@ -576,7 +604,7 @@ public class CustomerRepository
             List<Integer> num_entries = raffleCouponRepository.getEntryAmount(order.getCustomerId(), order.getRestaurantId());
             if(num_entries.size() == 0) {
                 String sql = "INSERT INTO participates (customer_id, raffle_id, num_entries) " +
-                             "VALUES (?, ?, ?) ";
+                        "VALUES (?, ?, ?) ";
                 double min_entry_amount = raffles.get(0).getMinEntryPrice();
                 double order_total = order.getPrice();
                 int new_entries = (int) (order_total / min_entry_amount);
@@ -622,6 +650,18 @@ public class CustomerRepository
                 "WHERE order_id = ? ";
         Object[] params = {order_id};
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public User getCourierOfOrder(int order_id) {
+        String sql = "SELECT * FROM `user` " +
+                "INNER JOIN assigned_to ON `user`.user_id = assigned_to.courier_id " +
+                "WHERE order_id = ? AND decision = 'Accepted'";
+        Object[] params = {order_id};
+        List<User> users = jdbcTemplate.query(sql, params, userRowMapper);
+        if (users.size() == 0)
+            return null;
+        else
+            return users.get(0);
     }
 
     public boolean restaurantIsOpen(int restaurantId){
