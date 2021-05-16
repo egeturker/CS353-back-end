@@ -126,6 +126,10 @@ public class CustomerRepository
         return favorite;
     };
 
+    RowMapper<Boolean> booleanRowMapper = (rs, rowNum) ->{
+        return rs.getBoolean("status");
+    };
+
     public List<Restaurant> getAllRestaurants()
     {
         String sql = "SELECT * FROM restaurant";
@@ -618,5 +622,16 @@ public class CustomerRepository
                 "WHERE order_id = ? ";
         Object[] params = {order_id};
         return jdbcTemplate.update(sql, params) == 1;
+    }
+
+    public boolean restaurantIsOpen(int restaurantId){
+        String sql = "SELECT status FROM restaurant WHERE restaurant_id = ?";
+        Object[] params = {restaurantId};
+        List<Boolean> status = jdbcTemplate.query(sql, params, booleanRowMapper);
+        if(status.size() == 1)
+            return status.get(0);
+        else
+            return false;
+
     }
 }

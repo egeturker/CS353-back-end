@@ -142,6 +142,8 @@ public class CustomerService
 
     public Response createNewOrder(OrderFromCustomer order)
     {
+        if(!customerRepository.restaurantIsOpen(order.getRestaurantId()))
+            return new Response(false, "Restaurant is closed", null);
         if(customerRepository.createNewOrder(order)) {
             //If the restaurant has no raffles, then RaffleEntryResults' attributes are set to -1
             RaffleEntryResults result = customerRepository.updateRaffleParticipation(order);
