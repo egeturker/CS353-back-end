@@ -120,6 +120,7 @@ public class ReviewRepository {
         int numberOfOldOrders  = jdbcTemplate.queryForObject(sql, params2, Integer.class);
 
         double newRating = (oldRating * (numberOfOldOrders - 1) + score) / (numberOfOldOrders);
+        newRating = Math.round(newRating * 10.0) / 10.0;
 
         sql = "UPDATE restaurant SET rating = ? WHERE restaurant_id = ?";
         Object[] params3 = {newRating, restaurantId};
@@ -153,6 +154,7 @@ public class ReviewRepository {
 
 
         double newRating = (oldRating * (numberOfOldOrders - 1) + score) / (numberOfOldOrders);
+        newRating = Math.round(newRating * 10.0) / 10.0;
 
         sql = "UPDATE courier SET rating = ? WHERE courier_id = ?";
         Object[] params3 = {newRating, courierId};
