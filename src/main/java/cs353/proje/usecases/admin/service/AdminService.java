@@ -38,4 +38,15 @@ public class AdminService {
         reportResults.setColumnNames(columnNames);
         return new Response(true, "Successfully generated the report.", reportResults);
     }
+
+    public Response restaurantOrderStatisticsReport(){
+        ReportResults reportResults = new ReportResults();
+        List<String> columnNames = Arrays.asList("Restaurant Name", "Total Orders", "Total Price of Orders",
+                "Total Reviews for Orders", "Review Score Average");
+        List<List<String>> rows = adminRepository.restaurantOrderStatisticsReport();
+
+        reportResults.setRows(rows);
+        reportResults.setColumnNames(columnNames);
+        return new Response(true, "Successfully generated the report.", reportResults);
+    }
 }
