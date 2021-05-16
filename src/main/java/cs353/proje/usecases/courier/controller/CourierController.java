@@ -102,4 +102,16 @@ public class CourierController {
         return courierService.getOldOrders(courier_id);
     }
 
+    @GetMapping("/open/courier_id={id}")
+    public Response open(@PathVariable(value="id") int courier_id)
+    {
+        return courierService.open(courier_id);
+    }
+
+    @GetMapping("/close/courier_id={id}")
+    public Response close(@PathVariable(value="id") int courier_id)
+    {
+        return courierService.close(courier_id);
+    }
+
 }
