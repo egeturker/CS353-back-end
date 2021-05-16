@@ -26,4 +26,10 @@ public class AdminController {
         return adminService.raffleStatisticsReport();
     }
 
+    @GetMapping("/restaurantOrderStatisticsReport")
+    public Response restaurantOrderStatisticsReport()
+    {
+        return adminService.restaurantOrderStatisticsReport();
+    }
+
 }
