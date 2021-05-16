@@ -358,7 +358,7 @@ public class CustomerRepository
 
     public List<Order> getOldOrders( int customerId)
     {
-        String sql = "SELECT order_id, restaurant.restaurant_id, customer_id, price, order_time, " +
+        String sql = "SELECT order_id, restaurant.restaurant_id, customer_id, price, order_time, delivery_fee, " +
                 "delivery_time , payment_method, coupon, restaurant_name, order.status, optional_delivery_time FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = order.restaurant_id " +
                 "WHERE customer_id = ? " +

@@ -3,6 +3,7 @@ package cs353.proje.usecases.common.controller;
 import cs353.proje.usecases.common.dto.Response;
 import cs353.proje.usecases.common.dto.Review;
 import cs353.proje.usecases.common.dto.ReviewFromCustomer;
+import cs353.proje.usecases.common.dto.ReviewResponse;
 import cs353.proje.usecases.common.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +39,9 @@ public class ReviewController {
     //Only one response per review is possible.
     @PostMapping("/makeResponse/review_id={id}")
     public Response makeResponse(@PathVariable(value="id") int review_id,
-                                 @RequestBody String response)
+                                 @RequestBody ReviewResponse response)
     {
-        return reviewService.makeResponse(review_id, response);
+        return reviewService.makeResponse(review_id, response.getResponse());
     }
 
     @GetMapping("/getReviews/restaurant_id={id}")

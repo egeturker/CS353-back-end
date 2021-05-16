@@ -90,7 +90,8 @@ public class ReviewRepository {
                 "review.courier_score, review.comment, review.order_id, review.response " +
                 "FROM review " +
                 "INNER JOIN `order` ON `order`.order_id = review.order_id " +
-                "WHERE restaurant_id = ?";
+                "WHERE restaurant_id = ? " +
+                "ORDER BY review.date DESC";
         Object[] params = {restaurantId};
 
         return jdbcTemplate.query(sql, params, reviewRowMapper);
@@ -135,15 +136,15 @@ public class ReviewRepository {
 
         sql = "SELECT DISTINCT rating FROM assigned_to " +
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
-                "WHERE courier.courier_id IN  " +
-                "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
+                "WHERE courier.courier_id IN " +
+                "(SELECT courier_id FROM assigned_to WHERE order_id = ? AND decision = 'Accepted') " +
                 "AND decision = 'Accepted'";
         double oldRating = jdbcTemplate.queryForObject(sql, params, Double.class);
 
         sql = "SELECT DISTINCT assigned_to.courier_id FROM assigned_to " +
                 "INNER JOIN courier ON courier.courier_id = assigned_to.courier_id " +
-                "WHERE courier.courier_id IN  " +
-                "(SELECT courier_id FROM assigned_to WHERE order_id = ?) " +
+                "WHERE courier.courier_id IN " +
+                "(SELECT courier_id FROM assigned_to WHERE order_id = ? AND decision = 'Accepted') " +
                 "AND decision = 'Accepted'";
         int courierId= jdbcTemplate.queryForObject(sql, params, Integer.class);
 

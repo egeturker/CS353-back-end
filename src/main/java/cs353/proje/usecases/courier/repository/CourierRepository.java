@@ -209,12 +209,12 @@ public class CourierRepository {
         OrderDetails orderDetails = customerRepository.getOrderDetails(orderId);
         Customer customer = customerRepository.getCustomerData(orderDetails.getOrder().getCustomerId());
 
-        String sql2 = "SELECT fee FROM operates_in" +
+        String sql2 = "SELECT fee FROM operates_in " +
                 "WHERE courier_id = ? AND region_id = ? ";
         Object[] params2 = {courierId, customer.getRegion_id()};
         double fee = jdbcTemplate.queryForObject(sql2, params2, Double.class);
 
-        String sql3 = "UPDATE `order` SET delivery_fee = ?, " +
+        String sql3 = "UPDATE `order` SET delivery_fee = ? " +
                 "WHERE order_id = ?";
         Object[] params3 = {fee, orderId};
 
@@ -253,7 +253,8 @@ public class CourierRepository {
                 "INNER JOIN customer ON customer.customer_id = order.customer_id " +
                 "INNER JOIN user ON user.user_id = customer.customer_id " +
                 "INNER JOIN region ON region.region_id = customer.region_id " +
-                "WHERE courier_id = ? AND decision = 'Accepted' ";
+                "WHERE courier_id = ? AND decision = 'Accepted' " +
+                "ORDER BY order_time DESC";
         Object[] params = {courierId};
 
         return jdbcTemplate.query(sql, params,orderDetailsForCourierRowMapper);
