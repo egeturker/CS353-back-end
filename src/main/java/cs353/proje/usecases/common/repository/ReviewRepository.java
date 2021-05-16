@@ -104,14 +104,12 @@ public class ReviewRepository {
                 "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
         Object[] params = {orderId};
         double oldRating  = jdbcTemplate.queryForObject(sql, params, Double.class);
-        System.out.println(oldRating);
 
         sql = "SELECT DISTINCT restaurant.restaurant_id FROM `order` " +
                 "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id " +
                 "WHERE restaurant.restaurant_id IN  " +
                 "(SELECT restaurant_id FROM `order` WHERE order_id = ?)";
         int restaurantId = jdbcTemplate.queryForObject(sql, params, Integer.class);
-        System.out.println(restaurantId);
 
 
         sql = "SELECT COUNT(*) FROM review\n" +
@@ -120,7 +118,6 @@ public class ReviewRepository {
         Object[] params2 = {restaurantId};
 
         int numberOfOldOrders  = jdbcTemplate.queryForObject(sql, params2, Integer.class);
-        System.out.println(numberOfOldOrders);
 
         double newRating = (oldRating * (numberOfOldOrders - 1) + score) / (numberOfOldOrders);
 
