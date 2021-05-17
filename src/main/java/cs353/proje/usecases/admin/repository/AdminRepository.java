@@ -41,14 +41,8 @@ public class AdminRepository {
         row.add(rs.getString(1));
         row.add(rs.getString(2));
         row.add(rs.getString(3));
-
-        return row;
-    };
-
-    RowMapper<List<String>> restaurantOrderStatisticsRowMapper2 = (rs, rowNum) -> {
-        List<String> row = new ArrayList<>();
-        row.add(rs.getString(1));
-        row.add(rs.getString(2));
+        row.add(rs.getString(4));
+        row.add(rs.getString(5) );
 
         return row;
     };
@@ -75,28 +69,20 @@ public class AdminRepository {
     }
 
     public List<List<String>> restaurantOrderStatisticsReport(){
-        String sql = "SELECT restaurant_name, COUNT(*) AS total_orders, SUM(price) AS total_price\n" +
-                "FROM `order` \n" +
-                "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id\n" +
-                "WHERE order_time > DATE_SUB(CURDATE(), INTERVAL 1 DAY) \n" +
-                "GROUP BY `order`.restaurant_id ORDER BY `order`.restaurant_id ASC ";
+        String sql = "WITH review_info AS (SELECT restaurant.restaurant_id, COUNT(*) AS total_reviews, AVG(restaurant_score) AS average_score FROM review\n" +
+                "                INNER JOIN `order`ON `order`.order_id = review.order_id\n" +
+                "                INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id\n" +
+                "                WHERE order_time > DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
+                "                GROUP BY restaurant.restaurant_id ORDER BY restaurant.restaurant_id ASC)\n" +
+                "SELECT restaurant_name, COUNT(*) AS total_orders, SUM(price) AS total_price, review_info.total_reviews, review_info.average_score\n" +
+                "                FROM `order`\n" +
+                "                INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id\n" +
+                "                INNER JOIN review_info ON review_info.restaurant_id = restaurant.restaurant_id\n" +
+                "                WHERE order_time > DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
+                "                GROUP BY `order`.restaurant_id ORDER BY `order`.restaurant_id ASC";
         Object[] params = {};
         List<List<String>> report = jdbcTemplate.query(sql, params, restaurantOrderStatisticsRowMapper);
-
-        sql = "SELECT COUNT(*) AS total_reviews, AVG(restaurant_score) AS average_score FROM review \n" +
-                "INNER JOIN `order`ON `order`.order_id = review.order_id \n" +
-                "INNER JOIN restaurant ON restaurant.restaurant_id = `order`.restaurant_id \n" +
-                "WHERE order_time > DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
-                "GROUP BY restaurant.restaurant_id ORDER BY restaurant.restaurant_id ASC\n";
-        List<List<String>> report2 = jdbcTemplate.query(sql, params, restaurantOrderStatisticsRowMapper2);
-
-        for (int i = 0; i < report.size(); i++)
-        {
-            report.get(i).addAll(report2.get(i));
-        }
-
-
-
+        
         return report;
     }
 }
