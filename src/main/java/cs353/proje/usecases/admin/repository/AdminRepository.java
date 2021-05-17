@@ -89,7 +89,12 @@ public class AdminRepository {
                 "WHERE order_time > DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
                 "GROUP BY restaurant.restaurant_id ORDER BY restaurant.restaurant_id ASC\n";
         List<List<String>> report2 = jdbcTemplate.query(sql, params, restaurantOrderStatisticsRowMapper2);
-        report.addAll(report2);
+
+        for (int i = 0; i < report.size(); i++)
+        {
+            report.get(i).addAll(report2.get(i));
+        }
+
 
 
         return report;
